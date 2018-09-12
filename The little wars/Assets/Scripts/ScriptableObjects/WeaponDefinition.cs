@@ -15,5 +15,6 @@ namespace Assets.Scripts.ScriptableObjects
         public bool FriendlyFire;
         public Transform BulletPrefab;
         public int Shoots;
+        public Sprite ExplodeSprite;
     }
 }

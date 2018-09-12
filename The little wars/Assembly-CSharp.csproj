@@ -61,35 +61,43 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\CameraFollowScript.cs" />
-    <Compile Include="Assets\GameModel.cs" />
-    <Compile Include="Assets\PowerBarScript.cs" />
     <Compile Include="Assets\Scripts\Constants\ResourcesPaths.cs" />
+    <Compile Include="Assets\Scripts\Constants\Tags.cs" />
     <Compile Include="Assets\Scripts\Constants\WeaponEnum.cs" />
+    <Compile Include="Assets\Scripts\Entities\Player.cs" />
+    <Compile Include="Assets\Scripts\Entities\Unit.cs" />
     <Compile Include="Assets\Scripts\ExtensionMethods\List.cs" />
-    <Compile Include="Assets\Scripts\ObjectsScripts\CharacterMoveScript.cs" />
-    <Compile Include="Assets\Scripts\ObjectsScripts\DestroyScript.cs" />
-    <Compile Include="Assets\Scripts\ObjectsScripts\ExplodeOnColideScript.cs" />
-    <Compile Include="Assets\Scripts\ObjectsScripts\ForceScript.cs" />
-    <Compile Include="Assets\Scripts\ObjectsScripts\GravityAttractor.cs" />
-    <Compile Include="Assets\Scripts\ObjectsScripts\GravityBody.cs" />
-    <Compile Include="Assets\Scripts\ResourcesHelper.cs" />
+    <Compile Include="Assets\Scripts\ExtensionMethods\String.cs" />
+    <Compile Include="Assets\Scripts\GameModel.cs" />
+    <Compile Include="Assets\Scripts\Helpers\CameraHelper.cs" />
+    <Compile Include="Assets\Scripts\Helpers\GameObjectsProviderHelper.cs" />
+    <Compile Include="Assets\Scripts\Helpers\ResourcesHelper.cs" />
+    <Compile Include="Assets\Scripts\Helpers\ShootHelper.cs" />
+    <Compile Include="Assets\Scripts\Helpers\SpawnsHelper.cs" />
+    <Compile Include="Assets\Scripts\ScriptableObjects\ExplosionScript.cs" />
     <Compile Include="Assets\Scripts\ScriptableObjects\WeaponDefinition.cs" />
-    <Compile Include="Assets\Scripts\ShootManager.cs" />
-    <Compile Include="Assets\Scripts\SpawnsHelper.cs" />
-    <Compile Include="Assets\Scripts\UiScript.cs" />
-    <Compile Include="Assets\WeaponButtonScript.cs" />
+    <Compile Include="Assets\Scripts\Scripts\Camera\CameraFollowScript.cs" />
+    <Compile Include="Assets\Scripts\Scripts\Camera\CameraRotationScript.cs" />
+    <Compile Include="Assets\Scripts\Scripts\CharacterMoveScript.cs" />
+    <Compile Include="Assets\Scripts\Scripts\DestroyScript.cs" />
+    <Compile Include="Assets\Scripts\Scripts\ExplodeOnColideScript.cs" />
+    <Compile Include="Assets\Scripts\Scripts\ForceScript.cs" />
+    <Compile Include="Assets\Scripts\Scripts\Gravitation\GravityAttractorScript.cs" />
+    <Compile Include="Assets\Scripts\Scripts\Gravitation\GravityBodyScript.cs" />
+    <Compile Include="Assets\Scripts\Scripts\PowerBarScript.cs" />
+    <Compile Include="Assets\Scripts\Scripts\UiScript.cs" />
+    <Compile Include="Assets\Scripts\Scripts\WeaponButtonScript.cs" />
     <Reference Include="UnityEditor.StandardEvents">
-      <HintPath>F:/UnityWorkspace/The little wars/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
+      <HintPath>H:/workspace/GitRepo/TheLittleWars/The little wars/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>F:/UnityWorkspace/The little wars/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>H:/workspace/GitRepo/TheLittleWars/The little wars/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>F:/UnityWorkspace/The little wars/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+      <HintPath>H:/workspace/GitRepo/TheLittleWars/The little wars/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>F:/UnityWorkspace/The little wars/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+      <HintPath>H:/workspace/GitRepo/TheLittleWars/The little wars/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>G:/programy/Unity3d2017/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>

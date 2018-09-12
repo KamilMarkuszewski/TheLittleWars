@@ -15,8 +15,12 @@ namespace Assets.Scripts.Constants
         HollyGrenade = 5,
         Fox = 6,
         SupriseBox = 7,
-
-
+        Commet = 8,
+        SlingShot = 9,
+        Morale = 10,
+        JetPack = 11,
+        Hook = 12,
+        BaseballBat = 13,
         Skip = 14
     }
 }
