@@ -1,0 +1,1 @@
+Place for sprites and textures before we add them to the game.
