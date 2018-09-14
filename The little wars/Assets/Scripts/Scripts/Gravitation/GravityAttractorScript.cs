@@ -9,19 +9,19 @@ namespace Assets.Scripts.Scripts
     public class GravityAttractorScript : MonoBehaviour
     {
         public float Gravity = -400;
-        public float atmosphereThickness = 3.0f;
+        public float AtmosphereThickness = 3.0f;
         public Transform AtmosphereObject;
 
 
         private void Start()
         {
-            AtmosphereObject.transform.localScale = new Vector3(atmosphereThickness, atmosphereThickness, atmosphereThickness);
+            AtmosphereObject.transform.localScale = new Vector3(AtmosphereThickness, AtmosphereThickness, AtmosphereThickness);
         }
 
         public void ApplyRotation(Transform body)
         {
             var h = Vector3.Distance(body.transform.position, transform.position);
-            if (h < atmosphereThickness)
+            if (h < AtmosphereThickness)
             {
                 var bodyUp = body.up;
                 var gravityUp = GravityUp(body);
@@ -42,11 +42,11 @@ namespace Assets.Scripts.Scripts
             var gravityUp = GravityUp(body);
             var h = GetDistance(body);
 
-            if (h < atmosphereThickness + atmosphereThickness/3)
+            if (h < AtmosphereThickness + AtmosphereThickness/3)
             {
                 h -= (4.0f - h) / 3.0f;
             }
-            if (h < atmosphereThickness - atmosphereThickness / 3)
+            if (h < AtmosphereThickness - AtmosphereThickness / 3)
             {
                 h = 2.0f;
             }

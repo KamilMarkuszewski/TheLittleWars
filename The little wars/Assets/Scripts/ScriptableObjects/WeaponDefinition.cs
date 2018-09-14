@@ -10,11 +10,22 @@ namespace Assets.Scripts.ScriptableObjects
     [CreateAssetMenu]
     public class WeaponDefinition : ScriptableObject
     {
-        public Sprite sprite;
-        public WeaponEnum weaponEnum;
+        public Sprite Sprite;
+        public WeaponEnum WeaponEnum;
         public bool FriendlyFire;
         public Transform BulletPrefab;
         public int Shoots;
         public Sprite ExplodeSprite;
+        public AudioClip ClipOnColide;
+        public AudioClip ClipOnExplode;
+        public AudioClip ClipOnTimerCount;
+        public AudioClip ClipOnButtonClicked;
+        public AudioClip ClipOnShot
+            ;
+        public int Damage;
+
+        public bool CollideMapExplode;
+
+        public float CollisionDetectionDelay;
     }
 }

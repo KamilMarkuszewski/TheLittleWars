@@ -3,16 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Assets.Scripts.Entities;
-using Assets.Scripts.Helpers;
+using Assets.Scripts.Services;
 using UnityEngine;
 
 namespace Assets.Scripts.Scripts
 {
+    [RequireComponent(typeof(Rigidbody2D))]
     public class CharacterMoveScript : MonoBehaviour
     {
+        #region Services
+
+        private GameObjectsProviderService GameObjectsProviderService
+        {
+            get { return ServiceLocator.GetService<GameObjectsProviderService>(); }
+        }
+
+        private ShootService ShootService
+        {
+            get { return ServiceLocator.GetService<ShootService>(); }
+        }
+
+        #endregion
+
         public Unit Unit;
-        private bool lookRight = true;
+        private bool _lookRight = true;
         public bool AllowControll;
+        private float _fireTimer;
 
         private Rigidbody2D _rigidbody;
 
@@ -25,6 +41,7 @@ namespace Assets.Scripts.Scripts
 
         public Transform Scope;
         public Transform CharacterSprite;
+
 
         // Use this for initialization
         void Start()
@@ -45,29 +62,27 @@ namespace Assets.Scripts.Scripts
             sr.enabled = visibility;
         }
 
-
-        private float fireTimer = 0;
         private void ControllFire()
         {
             if (Input.GetButton("Fire2"))
             {
-                if (fireTimer < Time.time)
+                if (_fireTimer < Time.time)
                 {
-                    fireTimer = Time.time + 0.06f;
-                    GameObjectsProviderHelper.GameModel.IncrementPower();
+                    _fireTimer = Time.time + 0.06f;
+                    GameObjectsProviderService.GameModel.IncrementPower();
                 }
             }
             else
             {
-                int power = GameObjectsProviderHelper.GameModel.GetPower();
+                int power = GameObjectsProviderService.GameModel.GetPower();
                 if (power > 0)
                 {
-                    var direction = lookRight ? Scope.right : Scope.right * -1;
-                    ShootHelper.Shoot(GameObjectsProviderHelper.GameModel.CurrentWeapon, transform.position, direction.normalized, power);
-                    GameObjectsProviderHelper.GameModel.ResetPower();
-                    if (ShootHelper.ShouldEndRound(GameObjectsProviderHelper.GameModel.CurrentWeapon))
+                    var direction = _lookRight ? Scope.right : Scope.right * -1;
+                    ShootService.Shoot(GameObjectsProviderService.GameModel.CurrentWeapon, transform.position, direction.normalized, power);
+                    GameObjectsProviderService.GameModel.ResetPower();
+                    if (ShootService.ShouldRoundEnd(GameObjectsProviderService.GameModel.CurrentWeapon))
                     {
-                        GameObjectsProviderHelper.GameModel.NewRound();
+                        GameObjectsProviderService.GameModel.NewRound();
                     }
                 }
             }
@@ -78,15 +93,15 @@ namespace Assets.Scripts.Scripts
         {
             var moveScope = Input.GetAxis("Vertical");
             var x = Input.GetAxis("Horizontal");
-            if ((lookRight && x < 0) || (!lookRight && x > 0))
+            if ((_lookRight && x < 0) || (!_lookRight && x > 0))
             {
-                lookRight = !lookRight;
+                _lookRight = !_lookRight;
                 CharacterSprite.transform.localScale = new Vector3(-CharacterSprite.transform.localScale.x, CharacterSprite.transform.localScale.y, CharacterSprite.transform.localScale.z);
 
             }
             else
             {
-                if (!lookRight)
+                if (!_lookRight)
                 {
                     moveScope = -moveScope;
                 }
@@ -192,10 +207,15 @@ namespace Assets.Scripts.Scripts
         {
             if (theCollision.gameObject == _groundedOn)
             {
-                _groundedOn = null;
-                _isGroundedForWalk = false;
-                _isGroundedForJump = false;
+                SetNotGrounded();
             }
+        }
+
+        private void SetNotGrounded()
+        {
+            _groundedOn = null;
+            _isGroundedForWalk = false;
+            _isGroundedForJump = false;
         }
 
         #endregion

@@ -11,9 +11,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f770490169b91646abe7a3e81c950c4, type: 3}
   m_Name: Mine
   m_EditorClassIdentifier: 
-  sprite: {fileID: 21300000, guid: b73e75922d6daa54badbc55187328fdf, type: 3}
-  weaponEnum: 2
-  FriendlyFire: 0
-  BulletPrefab: {fileID: 0}
-  Shoots: 0
-  ExplodeSprite: {fileID: 0}
+  Sprite: {fileID: 21300000, guid: b73e75922d6daa54badbc55187328fdf, type: 3}
+  WeaponEnum: 2
+  FriendlyFire: 1
+  BulletPrefab: {fileID: 4032219918622430, guid: 4b1b5d52aa59b70419483e069e4f2163,
+    type: 2}
+  Shoots: 1
+  ExplodeSprite: {fileID: 21300000, guid: a554871c7da642445b30a6c9dcce0b32, type: 3}
+  ClipOnColide: {fileID: 0}
+  ClipOnExplode: {fileID: 8300000, guid: e5cedc62ecdb8e74da397e0c7eb3f74c, type: 3}
+  ClipOnTimerCount: {fileID: 8300000, guid: d6128f901d8a66547bce739a5b48dae9, type: 3}
+  ClipOnButtonClicked: {fileID: 8300000, guid: 31ca8b2ebe4fad341bb9f249b2a3909a, type: 3}
+  Damage: 50
+  CollideMapExplode: 0
+  CollisionDetectionDelay: 1

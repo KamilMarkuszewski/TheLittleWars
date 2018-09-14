@@ -61,32 +61,43 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Constants\AudioClipsEnum.cs" />
     <Compile Include="Assets\Scripts\Constants\ResourcesPaths.cs" />
+    <Compile Include="Assets\Scripts\Constants\ServiceStatus.cs" />
     <Compile Include="Assets\Scripts\Constants\Tags.cs" />
     <Compile Include="Assets\Scripts\Constants\WeaponEnum.cs" />
+    <Compile Include="Assets\Scripts\Entities\ObjectPool.cs" />
     <Compile Include="Assets\Scripts\Entities\Player.cs" />
     <Compile Include="Assets\Scripts\Entities\Unit.cs" />
     <Compile Include="Assets\Scripts\ExtensionMethods\List.cs" />
     <Compile Include="Assets\Scripts\ExtensionMethods\String.cs" />
     <Compile Include="Assets\Scripts\GameModel.cs" />
-    <Compile Include="Assets\Scripts\Helpers\CameraHelper.cs" />
-    <Compile Include="Assets\Scripts\Helpers\GameObjectsProviderHelper.cs" />
-    <Compile Include="Assets\Scripts\Helpers\ResourcesHelper.cs" />
-    <Compile Include="Assets\Scripts\Helpers\ShootHelper.cs" />
-    <Compile Include="Assets\Scripts\Helpers\SpawnsHelper.cs" />
-    <Compile Include="Assets\Scripts\ScriptableObjects\ExplosionScript.cs" />
     <Compile Include="Assets\Scripts\ScriptableObjects\WeaponDefinition.cs" />
     <Compile Include="Assets\Scripts\Scripts\Camera\CameraFollowScript.cs" />
     <Compile Include="Assets\Scripts\Scripts\Camera\CameraRotationScript.cs" />
     <Compile Include="Assets\Scripts\Scripts\CharacterMoveScript.cs" />
-    <Compile Include="Assets\Scripts\Scripts\DestroyScript.cs" />
-    <Compile Include="Assets\Scripts\Scripts\ExplodeOnColideScript.cs" />
+    <Compile Include="Assets\Scripts\Scripts\ExplosionScripts\ExplodeOnColideScript.cs" />
+    <Compile Include="Assets\Scripts\Scripts\ExplosionScripts\ExplosionScript.cs" />
+    <Compile Include="Assets\Scripts\Scripts\ExplosionScripts\RunExplodeTimerOnColide.cs" />
     <Compile Include="Assets\Scripts\Scripts\ForceScript.cs" />
     <Compile Include="Assets\Scripts\Scripts\Gravitation\GravityAttractorScript.cs" />
     <Compile Include="Assets\Scripts\Scripts\Gravitation\GravityBodyScript.cs" />
-    <Compile Include="Assets\Scripts\Scripts\PowerBarScript.cs" />
-    <Compile Include="Assets\Scripts\Scripts\UiScript.cs" />
-    <Compile Include="Assets\Scripts\Scripts\WeaponButtonScript.cs" />
+    <Compile Include="Assets\Scripts\Scripts\MapDestroyScript.cs" />
+    <Compile Include="Assets\Scripts\Scripts\ServiceLocatorCreator.cs" />
+    <Compile Include="Assets\Scripts\Scripts\Ui\PowerBarScript.cs" />
+    <Compile Include="Assets\Scripts\Scripts\Ui\UiScript.cs" />
+    <Compile Include="Assets\Scripts\Scripts\Ui\WeaponButtonScript.cs" />
+    <Compile Include="Assets\Scripts\Scripts\WeaponDefinitionHolder.cs" />
+    <Compile Include="Assets\Scripts\Services\CameraService.cs" />
+    <Compile Include="Assets\Scripts\Services\DestructibleTerrainService.cs" />
+    <Compile Include="Assets\Scripts\Services\GameObjectsProviderService.cs" />
+    <Compile Include="Assets\Scripts\Services\Interfaces\IService.cs" />
+    <Compile Include="Assets\Scripts\Services\Interfaces\IServiceLocator.cs" />
+    <Compile Include="Assets\Scripts\Services\ResourcesService.cs" />
+    <Compile Include="Assets\Scripts\Services\ServiceLocator.cs" />
+    <Compile Include="Assets\Scripts\Services\ShootService.cs" />
+    <Compile Include="Assets\Scripts\Services\SoundService.cs" />
+    <Compile Include="Assets\Scripts\Services\SpawnsService.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>H:/workspace/GitRepo/TheLittleWars/The little wars/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>

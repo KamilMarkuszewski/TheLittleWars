@@ -648,9 +648,9 @@ PlayerSettings:
     UNet: 1
   facebookSdkVersion: 7.9.4
   apiCompatibilityLevel: 2
-  cloudProjectId: b69d3914-ec03-4864-b4d2-fecd75b17fed
+  cloudProjectId: cd638eb5-dbe3-4232-9df1-c60694c26bdc
   projectName: The little wars
-  organizationId: unity_dw0gshjb8xqloq
+  organizationId: kajtsweb
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0

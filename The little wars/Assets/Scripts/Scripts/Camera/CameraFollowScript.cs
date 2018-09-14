@@ -1,24 +1,29 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using UnityEngine;
 
-public class CameraFollowScript : MonoBehaviour
+namespace Assets.Scripts.Scripts.Camera
 {
-    public int Drag;
-    public Transform target;
-    public Vector3 Offset = new Vector3(0f, 7.5f, 0f);
-
-
-    private void LateUpdate()
+    public class CameraFollowScript : MonoBehaviour
     {
-        if (target != null)
+        public int Drag;
+        public Transform Target;
+        public Vector3 Offset = new Vector3(0f, 7.5f, 0f);
+
+
+        private void LateUpdate()
         {
-            ApplyPosition(target, Offset, Drag);
+            if (Target != null)
+            {
+                ApplyPosition(Target, Offset, Drag);
+            }
         }
-    }
 
-    public void ApplyPosition(Transform target, Vector3 offset, int drag)
-    {
-        transform.position = Vector3.Lerp(transform.position, target.position + offset, Time.deltaTime * Drag);
+        public void ApplyPosition(Transform target, Vector3 offset, int drag)
+        {
+            transform.position = Vector3.Lerp(transform.position, target.position + offset, Time.deltaTime * Drag);
+        }
     }
 }

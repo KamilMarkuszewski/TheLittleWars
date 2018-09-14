@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Assets.Scripts.Constants;
 using Assets.Scripts.Scripts;
+using Assets.Scripts.Services;
 using UnityEngine;
 
 namespace Assets.Scripts.Entities
@@ -10,6 +12,15 @@ namespace Assets.Scripts.Entities
 
     public class Unit
     {
+        #region Services
+
+        private SoundService SoundService
+        {
+            get { return ServiceLocator.GetService<SoundService>(); }
+        }
+
+        #endregion
+
         public string Name { private set; get; }
         public Color Color { private set; get; }
         public int Hp { private set; get; }
@@ -17,7 +28,7 @@ namespace Assets.Scripts.Entities
         public bool AllowControll { private set; get; }
 
         private CharacterMoveScript _characterMoveScript;
-        private CharacterMoveScript characterMoveScript
+        private CharacterMoveScript CharacterMoveScript
         {
             get
             {
@@ -30,7 +41,7 @@ namespace Assets.Scripts.Entities
         }
 
         private SpriteRenderer _spriteRenderer;
-        private SpriteRenderer spriteRenderer
+        private SpriteRenderer SpriteRenderer
         {
             get
             {
@@ -50,19 +61,19 @@ namespace Assets.Scripts.Entities
 
         public void SetColor(Color color)
         {
-            spriteRenderer.color = color;
+            SpriteRenderer.color = color;
             Color = color;
         }
 
         public void SetAllowControll(bool allowControll)
         {
             AllowControll = allowControll;
-            characterMoveScript.AllowControll = allowControll;
+            CharacterMoveScript.AllowControll = allowControll;
         }
 
         public void SetScopeVisibility(bool visibility)
         {
-            characterMoveScript.SetScopeVisibility(visibility);
+            CharacterMoveScript.SetScopeVisibility(visibility);
         }
 
         public void Instantiate(Transform characterPrefab, Transform charactersParentObject, Vector3 spawnPosition, Color color)
@@ -70,7 +81,7 @@ namespace Assets.Scripts.Entities
             var createdCharacter = UnityEngine.Object.Instantiate(characterPrefab, charactersParentObject);
             createdCharacter.transform.position = spawnPosition;
             UnitTransform = createdCharacter;
-            characterMoveScript.Unit = this;
+            CharacterMoveScript.Unit = this;
 
             SetColor(color);
             SetAllowControll(false);
@@ -89,8 +100,11 @@ namespace Assets.Scripts.Entities
             {
                 newHp = 0;
             }
+            else if (amount < 0)
+            {
+                SoundService.PlayClip(AudioClipsEnum.UnitDamaged);
+            }
             Hp = newHp;
-            Debug.Log(newHp);
         }
     }
 }

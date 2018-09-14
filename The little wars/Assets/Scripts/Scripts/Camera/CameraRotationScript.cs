@@ -5,13 +5,13 @@ using UnityEngine;
 public class CameraRotationScript : MonoBehaviour
 {
     public int AngularDrag;
-    public Transform target;
+    public Transform Target;
 
     private void LateUpdate()
     {
-        if (target != null)
+        if (Target != null)
         {
-            ApplyRotation(target, AngularDrag);
+            ApplyRotation(Target, AngularDrag);
         }
     }
 

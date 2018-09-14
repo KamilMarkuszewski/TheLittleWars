@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 50122674240928870}
   - component: {fileID: 58027519574730406}
   - component: {fileID: 114872825591630626}
+  - component: {fileID: 114040582360088188}
   m_Layer: 0
   m_Name: grenadePrefab
   m_TagString: Bullet
@@ -253,6 +254,18 @@ PolygonCollider2D:
     - - {x: -0.5, y: 0.45999998}
       - {x: -0.51, y: 0.44}
       - {x: -0.48999998, y: 0.45}
+--- !u!114 &114040582360088188
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1319327223273368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f97bae399e6e6b24ebd4734d8fc84c54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WeaponDefinition: {fileID: 11400000, guid: eb5176683255d90418459a6530954968, type: 2}
 --- !u!114 &114396604120686920
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -273,7 +286,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1264742183452942}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5966ee08226a07a4e88593df2ecc03f4, type: 3}
+  m_Script: {fileID: 11500000, guid: 886345d67b882b64183895734d71acab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114872825591630626
@@ -284,10 +297,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1319327223273368}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 85b0946b12ef74b46b36836b78d09bb8, type: 3}
+  m_Script: {fileID: 11500000, guid: a087c3d21a8796a4782f55fa760289ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ExplosionObject: {fileID: 4324871337566086}
 --- !u!212 &212265781068098614
 SpriteRenderer:
   m_ObjectHideFlags: 1
