@@ -41,6 +41,15 @@ namespace Assets.Scripts.Services
         }
 
 
+        public List<Transform> LoadUnitPrefabs(string path)
+        {
+            var loadedObjects = Resources.LoadAll(path, typeof(Transform));
+            var loadAudioClips = loadedObjects.Select(i => i as Transform).Where(i => i != null).ToList();
+            Debug.Log(string.Format("{0} objects loaded from path {1} ", loadAudioClips.Count, path));
+            return loadAudioClips;
+        }
+
+
         #region IService
 
         public void Initialize()

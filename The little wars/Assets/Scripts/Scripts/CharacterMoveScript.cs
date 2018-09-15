@@ -69,20 +69,20 @@ namespace Assets.Scripts.Scripts
                 if (_fireTimer < Time.time)
                 {
                     _fireTimer = Time.time + 0.06f;
-                    GameObjectsProviderService.GameModel.IncrementPower();
+                    GameObjectsProviderService.MainGameController.WeaponController.IncrementPower();
                 }
             }
             else
             {
-                int power = GameObjectsProviderService.GameModel.GetPower();
+                int power = GameObjectsProviderService.WeaponController.GetPower();
                 if (power > 0)
                 {
                     var direction = _lookRight ? Scope.right : Scope.right * -1;
-                    ShootService.Shoot(GameObjectsProviderService.GameModel.CurrentWeapon, transform.position, direction.normalized, power);
-                    GameObjectsProviderService.GameModel.ResetPower();
-                    if (ShootService.ShouldRoundEnd(GameObjectsProviderService.GameModel.CurrentWeapon))
+                    ShootService.Shoot(GameObjectsProviderService.WeaponController.GetCurrentWeapon(), transform.position, direction.normalized, power);
+                    GameObjectsProviderService.WeaponController.ResetPower();
+                    if (ShootService.ShouldRoundEnd(GameObjectsProviderService.WeaponController.GetCurrentWeapon()))
                     {
-                        GameObjectsProviderService.GameModel.NewRound();
+                        GameObjectsProviderService.MainGameController.NewRound();
                     }
                 }
             }

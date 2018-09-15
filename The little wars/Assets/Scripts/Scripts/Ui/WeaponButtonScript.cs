@@ -28,7 +28,7 @@ namespace Assets.Scripts.Scripts
 
         public void SetWeaponAsCurrent()
         {
-            GameObjectsProviderService.GameModel.SetCurrentWeapon(WeaponDefinition);
+            GameObjectsProviderService.WeaponController.SetCurrentWeapon(WeaponDefinition);
             SoundService.PlayClip(WeaponDefinition.ClipOnButtonClicked);
         }
     }

@@ -27,15 +27,15 @@ namespace Assets.Scripts.Scripts.Ui
         // Use this for initialization
         void Start()
         {
-            GameObjectsProviderService.GameModel.RoundChangedEvent += (sender, eventArgs) =>
+            GameObjectsProviderService.MainGameController.RoundChangedEvent += (sender, eventArgs) =>
             {
-                TimerTextScript.color = GameObjectsProviderService.GameModel.GetCurrentPlayer().Color;
+                TimerTextScript.color = GameObjectsProviderService.MainGameController.GetCurrentPlayer().Color;
             };
         }
 
         void FixedUpdate()
         {
-            string time = GameObjectsProviderService.GameModel.GetTime();
+            string time = GameObjectsProviderService.MainGameController.GetTime();
             TimerTextScript.text = time;
         }
 

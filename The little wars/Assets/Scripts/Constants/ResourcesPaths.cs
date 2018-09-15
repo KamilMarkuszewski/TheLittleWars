@@ -7,6 +7,7 @@ namespace Assets.Scripts.Constants
 {
     public class ResourcesPaths
     {
+        public const string Units = "GameObjects/Units";
         public const string Weapons = "GameObjects/Weapons";
         public const string Sounds = "Sounds";
     }

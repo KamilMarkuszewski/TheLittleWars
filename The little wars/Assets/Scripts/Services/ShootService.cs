@@ -28,6 +28,11 @@ namespace Assets.Scripts.Services
             get { return ServiceLocator.GetService<ResourcesService>(); }
         }
 
+        private GameObjectsProviderService GameObjectsProviderService
+        {
+            get { return ServiceLocator.GetService<GameObjectsProviderService>(); }
+        }
+
         #endregion
 
         private List<WeaponDefinition> _loadedWeapons;
@@ -57,6 +62,7 @@ namespace Assets.Scripts.Services
                 {
                     SoundService.PlayClip(definition.ClipOnShot);
                     var bullet = UnityEngine.Object.Instantiate(definition.BulletPrefab, position + direction, Quaternion.identity);
+                    bullet.parent = GameObjectsProviderService.BulletsParentObject.transform;
                     var rb = bullet.GetComponent<Rigidbody2D>();
                     rb.AddForce(direction * power * 100);
                     CameraService.SetCameraFollowTarget(bullet);

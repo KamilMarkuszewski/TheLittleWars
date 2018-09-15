@@ -66,12 +66,19 @@
     <Compile Include="Assets\Scripts\Constants\ServiceStatus.cs" />
     <Compile Include="Assets\Scripts\Constants\Tags.cs" />
     <Compile Include="Assets\Scripts\Constants\WeaponEnum.cs" />
+    <Compile Include="Assets\Scripts\Contollers\MainGameController.cs" />
+    <Compile Include="Assets\Scripts\Contollers\MatchController.cs" />
+    <Compile Include="Assets\Scripts\Contollers\Models\MatchModel.cs" />
+    <Compile Include="Assets\Scripts\Contollers\Models\WeaponModel.cs" />
+    <Compile Include="Assets\Scripts\Contollers\WeaponController.cs" />
+    <Compile Include="Assets\Scripts\Entities\EventArgs\IncrementPowerEventArgs.cs" />
+    <Compile Include="Assets\Scripts\Entities\EventArgs\WeaponChangedEventArgs.cs" />
     <Compile Include="Assets\Scripts\Entities\ObjectPool.cs" />
     <Compile Include="Assets\Scripts\Entities\Player.cs" />
+    <Compile Include="Assets\Scripts\Entities\PlayerQueue.cs" />
     <Compile Include="Assets\Scripts\Entities\Unit.cs" />
     <Compile Include="Assets\Scripts\ExtensionMethods\List.cs" />
     <Compile Include="Assets\Scripts\ExtensionMethods\String.cs" />
-    <Compile Include="Assets\Scripts\GameModel.cs" />
     <Compile Include="Assets\Scripts\ScriptableObjects\WeaponDefinition.cs" />
     <Compile Include="Assets\Scripts\Scripts\Camera\CameraFollowScript.cs" />
     <Compile Include="Assets\Scripts\Scripts\Camera\CameraRotationScript.cs" />
@@ -87,6 +94,7 @@
     <Compile Include="Assets\Scripts\Scripts\Ui\PowerBarScript.cs" />
     <Compile Include="Assets\Scripts\Scripts\Ui\UiScript.cs" />
     <Compile Include="Assets\Scripts\Scripts\Ui\WeaponButtonScript.cs" />
+    <Compile Include="Assets\Scripts\Scripts\Ui\WeaponImageScript.cs" />
     <Compile Include="Assets\Scripts\Scripts\WeaponDefinitionHolder.cs" />
     <Compile Include="Assets\Scripts\Services\CameraService.cs" />
     <Compile Include="Assets\Scripts\Services\DestructibleTerrainService.cs" />
@@ -98,6 +106,7 @@
     <Compile Include="Assets\Scripts\Services\ShootService.cs" />
     <Compile Include="Assets\Scripts\Services\SoundService.cs" />
     <Compile Include="Assets\Scripts\Services\SpawnsService.cs" />
+    <Compile Include="Assets\Scripts\Utility\UnitPrefabsContainer.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>H:/workspace/GitRepo/TheLittleWars/The little wars/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>

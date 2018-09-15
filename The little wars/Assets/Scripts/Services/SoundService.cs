@@ -90,7 +90,7 @@ namespace Assets.Scripts.Services
         private AudioSource AudioSourceGenerator()
         {
             var newGameObject = new GameObject("AudioSource", typeof(AudioSource));
-            newGameObject.transform.parent = GameObjectsProviderService.AudioSourcesGameObjectGameObject.transform;
+            newGameObject.transform.parent = GameObjectsProviderService.AudioSourcesGameObject.transform;
             return newGameObject.GetComponent<AudioSource>();
         }
 

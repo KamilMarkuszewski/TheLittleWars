@@ -21,7 +21,7 @@ namespace Assets.Scripts.Entities
         public Color Color;
         public List<Unit> Units = new List<Unit>();
 
-        public Player(Color color, int unitsAmount, List<Vector3> spawns, Transform characterPrefab, Transform charactersParentObject)
+        public Player(Color color, int unitsAmount, List<Vector3> spawns, Transform characterPrefab)
         {
             Color = color;
 
@@ -30,9 +30,27 @@ namespace Assets.Scripts.Entities
                 var unit = new Unit();
                 Units.Add(unit);
 
-                unit.Instantiate(characterPrefab, charactersParentObject, SpawnsService.GetNextSpawn(spawns), Color);
+                unit.Instantiate(characterPrefab, SpawnsService.GetNextSpawn(spawns), Color);
             }
+        }
+
+        public bool HasAliveUnits()
+        {
+            return Units.Any(u => u.IsAlive());
         }
     }
 
+
+
+    public class PlayerInitValues
+    {
+        public Color Color;
+        public int UnitsCount;
+
+        public PlayerInitValues(Color color, int unitsCount)
+        {
+            Color = color;
+            UnitsCount = unitsCount;
+        }
+    }
 }

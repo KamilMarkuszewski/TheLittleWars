@@ -79,7 +79,7 @@ namespace Assets.Scripts.Scripts.ExplosionScripts
         private void ColideWithUnit(GameObject actualCollider)
         {
             var moveScript = actualCollider.GetComponent<CharacterMoveScript>();
-            GameObjectsProviderService.GameModel.ChangeHp(moveScript.Unit, -WeaponDefinitionHolder.WeaponDefinition.Damage);
+            GameObjectsProviderService.MainGameController.ChangeHp(moveScript.Unit, -WeaponDefinitionHolder.WeaponDefinition.Damage);
         }
 
         private void ColideWithBullet(GameObject actualCollider)

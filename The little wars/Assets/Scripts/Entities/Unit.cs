@@ -14,6 +14,11 @@ namespace Assets.Scripts.Entities
     {
         #region Services
 
+        private GameObjectsProviderService GameObjectsProviderService
+        {
+            get { return ServiceLocator.GetService<GameObjectsProviderService>(); }
+        }
+
         private SoundService SoundService
         {
             get { return ServiceLocator.GetService<SoundService>(); }
@@ -59,6 +64,11 @@ namespace Assets.Scripts.Entities
             Name = "Some name from pool";
         }
 
+        public bool IsAlive()
+        {
+            return Hp > 0;
+        }
+
         public void SetColor(Color color)
         {
             SpriteRenderer.color = color;
@@ -76,9 +86,9 @@ namespace Assets.Scripts.Entities
             CharacterMoveScript.SetScopeVisibility(visibility);
         }
 
-        public void Instantiate(Transform characterPrefab, Transform charactersParentObject, Vector3 spawnPosition, Color color)
+        public void Instantiate(Transform characterPrefab, Vector3 spawnPosition, Color color)
         {
-            var createdCharacter = UnityEngine.Object.Instantiate(characterPrefab, charactersParentObject);
+            var createdCharacter = UnityEngine.Object.Instantiate(characterPrefab, GameObjectsProviderService.CharactersParentObject.transform);
             createdCharacter.transform.position = spawnPosition;
             UnitTransform = createdCharacter;
             CharacterMoveScript.Unit = this;
