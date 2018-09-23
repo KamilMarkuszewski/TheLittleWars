@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Assets.Scripts.Scripts
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class CharacterMoveScript : MonoBehaviour
+    public class UnitMoveScript : MonoBehaviour
     {
         #region Services
 
@@ -27,7 +27,6 @@ namespace Assets.Scripts.Scripts
 
         public Unit Unit;
         private bool _lookRight = true;
-        public bool AllowControll;
         private float _fireTimer;
 
         private Rigidbody2D _rigidbody;
@@ -50,50 +49,53 @@ namespace Assets.Scripts.Scripts
             _rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-            ControllCharacter();
-        }
-
         public void SetScopeVisibility(bool visibility)
         {
             var sr = Scope.GetComponent<SpriteRenderer>();
             sr.enabled = visibility;
         }
 
-        private void ControllFire()
+        private void ControllFire(bool isShooting)
         {
-            if (Input.GetButton("Fire2"))
+            if (isShooting)
             {
-                if (_fireTimer < Time.time)
-                {
-                    _fireTimer = Time.time + 0.06f;
-                    GameObjectsProviderService.MainGameController.WeaponController.IncrementPower();
-                }
+                StartShooting();
             }
             else
             {
-                int power = GameObjectsProviderService.WeaponController.GetPower();
-                if (power > 0)
-                {
-                    var direction = _lookRight ? Scope.right : Scope.right * -1;
-                    ShootService.Shoot(GameObjectsProviderService.WeaponController.GetCurrentWeapon(), transform.position, direction.normalized, power);
-                    GameObjectsProviderService.WeaponController.ResetPower();
-                    if (ShootService.ShouldRoundEnd(GameObjectsProviderService.WeaponController.GetCurrentWeapon()))
-                    {
-                        GameObjectsProviderService.MainGameController.NewRound();
-                    }
-                }
+                StopShooting();
             }
 
         }
 
-        private void ControllScope()
+        private void StopShooting()
         {
-            var moveScope = Input.GetAxis("Vertical");
-            var x = Input.GetAxis("Horizontal");
-            if ((_lookRight && x < 0) || (!_lookRight && x > 0))
+            int power = GameObjectsProviderService.CurrentWeaponController.GetPower();
+            if (power > 0)
+            {
+                var direction = _lookRight ? Scope.right : Scope.right * -1;
+                ShootService.Shoot(GameObjectsProviderService.CurrentWeaponController.GetCurrentWeapon(), transform.position,
+                    direction.normalized, power);
+                GameObjectsProviderService.CurrentWeaponController.ResetPower();
+                if (ShootService.ShouldRoundEnd(GameObjectsProviderService.CurrentWeaponController.GetCurrentWeapon()))
+                {
+                    GameObjectsProviderService.MainGameController.NewRound();
+                }
+            }
+        }
+
+        private void StartShooting()
+        {
+            if (_fireTimer < Time.time)
+            {
+                _fireTimer = Time.time + 0.06f;
+                GameObjectsProviderService.MainGameController.CurrentWeaponController.IncrementPower();
+            }
+        }
+
+        private void ControllScope(float yScopeMovement, float xMovement)
+        {
+            if ((_lookRight && xMovement < 0) || (!_lookRight && xMovement > 0))
             {
                 _lookRight = !_lookRight;
                 CharacterSprite.transform.localScale = new Vector3(-CharacterSprite.transform.localScale.x, CharacterSprite.transform.localScale.y, CharacterSprite.transform.localScale.z);
@@ -103,37 +105,35 @@ namespace Assets.Scripts.Scripts
             {
                 if (!_lookRight)
                 {
-                    moveScope = -moveScope;
+                    yScopeMovement = -yScopeMovement;
                 }
 
-                float localEulerAnglesZ = Scope.transform.localEulerAngles.z + moveScope;
+                float localEulerAnglesZ = Scope.transform.localEulerAngles.z + yScopeMovement;
                 if ((localEulerAnglesZ <= 90 && localEulerAnglesZ >= -10) || (localEulerAnglesZ <= 370 && localEulerAnglesZ >= 270))
                 {
-                    Scope.transform.Rotate(new Vector3(0, 0, 1), moveScope);
+                    Scope.transform.Rotate(new Vector3(0, 0, 1), yScopeMovement);
                 }
             }
         }
 
-        private void ControllCharacter()
+        public void ControllCharacter(float xUnitMovement, float yScopeMovement, bool isShooting, bool isJumping)
         {
-            if (!AllowControll)
-            {
-                return;
-            }
+            ControllScope(yScopeMovement, xUnitMovement);
+            ControllFire(isShooting);
+            ControllMovement(xUnitMovement, isJumping);
+        }
 
-            ControllScope();
-            ControllFire();
-
-            var y = Input.GetButton("Jump") ? 1.0f : 0.0f;
-            var x = Input.GetAxis("Horizontal");
+        private void ControllMovement(float xUnitMovement, bool isJumping)
+        {
+            var jumpMovement = isJumping ? 1.0f : 0.0f;
 
             if (!_isGroundedForWalk)
             {
-                x = 0.0f;
+                xUnitMovement = 0.0f;
             }
-            if (y < 0)
+            if (jumpMovement < 0)
             {
-                y = 0;
+                jumpMovement = 0;
             }
             else
             {
@@ -141,22 +141,22 @@ namespace Assets.Scripts.Scripts
                 {
                     if (_t < Time.time)
                     {
-                        y = 0;
+                        jumpMovement = 0;
                         _xToJump = 0;
                     }
                     else
                     {
-                        x = _xToJump;
-                        y = 1.0f;
+                        xUnitMovement = _xToJump;
+                        jumpMovement = 1.0f;
                     }
                 }
-                else if (y > 0 && _t < Time.time)
+                else if (jumpMovement > 0 && _t < Time.time)
                 {
-                    if (x > 0.1f)
+                    if (xUnitMovement > 0.1f)
                     {
                         _xToJump = 2.0f;
                     }
-                    else if (x < -0.1f)
+                    else if (xUnitMovement < -0.1f)
                     {
                         _xToJump = -2.0f;
                     }
@@ -164,12 +164,12 @@ namespace Assets.Scripts.Scripts
                     {
                         _xToJump = 0;
                     }
-                    y = 1.0f;
+                    jumpMovement = 1.0f;
                     _t = Time.time + 0.4f;
                 }
             }
 
-            _moveDir = new Vector2(x, y) * MoveSpeed;
+            _moveDir = new Vector2(xUnitMovement, jumpMovement) * MoveSpeed;
             _moveAmount = Vector2.SmoothDamp(_moveAmount, _moveDir, ref _smoothMoveVelocity, 0.15f);
         }
 
@@ -181,9 +181,9 @@ namespace Assets.Scripts.Scripts
 
         #region Grounded
 
-        GameObject _groundedOn;
-        public bool _isGroundedForJump;
-        public bool _isGroundedForWalk;
+        private GameObject _groundedOn;
+        private bool _isGroundedForJump;
+        private bool _isGroundedForWalk;
 
         void OnCollisionEnter2D(Collision2D theCollision)
         {

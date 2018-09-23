@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Scripts.Ui
 {
-    public class UiScript : MonoBehaviour
+    public class GameUiScript : MonoBehaviour
     {
         #region Services
 

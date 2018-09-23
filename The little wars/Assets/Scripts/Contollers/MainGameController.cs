@@ -5,8 +5,10 @@ using System.Linq;
 using System.Text;
 using Assets.Scripts.Constants;
 using Assets.Scripts.Entities;
+using Assets.Scripts.ScriptableObjects.GameModel;
 using Assets.Scripts.Services;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.Contollers
 {
@@ -32,7 +34,8 @@ namespace Assets.Scripts.Contollers
         #endregion
 
         public MatchController MatchController;
-        public WeaponController WeaponController;
+        public CurrentWeaponController CurrentWeaponController;
+        public ApplicationModel ApplicationModel;
 
         public event EventHandler<EventArgs> RoundChangedEvent;
         public bool GameOver;
@@ -40,7 +43,7 @@ namespace Assets.Scripts.Contollers
 
         private int _roundLength;
         private float _roundStart;
-        private bool _timeFrozen = true;
+        public bool TimeFrozen = true;
 
         public Player GetCurrentPlayer()
         {
@@ -62,23 +65,26 @@ namespace Assets.Scripts.Contollers
             MatchController.RemoveUnit(unit);
 
             unit.UnitTransform.gameObject.SetActive(false);
+
+            EndMatchIfNeeded();
             if (unit.AllowControll)
             {
-                if (MatchController.HasPlayersQueueOnlyOneElement())
-                {
-                    GameOver = true;
-                    MatchController.DequeuePlayer();
-                    NewRound();
-                    Debug.Log("Player " + MatchController.GetCurrentPlayer().Color + " won! ");
-                }
-                else if (MatchController.IsPlayersQueueEmpty())
-                {
-                    GameOver = true;
-                    NewRound();
-                    Debug.Log("Cthulhu ftaghn! ");
-                }
+                NewRound();
+            }
+        }
 
-
+        private void EndMatchIfNeeded()
+        {
+            if (MatchController.HasPlayersQueueOnlyOneTeam())
+            {
+                GameOver = true;
+                MatchController.DequeuePlayer();
+                SceneManager.LoadScene(SceneNames.GameOverScene);
+            }
+            else if (MatchController.IsPlayersQueueEmpty())
+            {
+                GameOver = true;
+                SceneManager.LoadScene(SceneNames.GameOverScene);
             }
         }
 
@@ -86,11 +92,8 @@ namespace Assets.Scripts.Contollers
         // Use this for initialization
         void Awake()
         {
-            WeaponController = new WeaponController();
-            MatchController = new MatchController(
-                new PlayerInitValues(Color.red, 3),
-                new PlayerInitValues(Color.blue, 3)
-                );
+            CurrentWeaponController = new CurrentWeaponController(ApplicationModel.CurrentWeaponModel);
+            MatchController = new MatchController(ApplicationModel.MatchModel, ApplicationModel.PlayersToCreate);
 
             _roundLength = 434435;
 
@@ -102,7 +105,7 @@ namespace Assets.Scripts.Contollers
         public string GetTime()
         {
             int seconds = (int)(_roundLength - (Time.time - _roundStart));
-            if (_timeFrozen)
+            if (TimeFrozen)
             {
                 seconds = 0;
             }
@@ -119,21 +122,7 @@ namespace Assets.Scripts.Contollers
         {
             RoundEnd();
             MatchController.EnqueuePlayer();
-            if (MatchController.HasPlayersQueueOnlyOneElement())
-            {
-                GameOver = true;
-                MatchController.DequeuePlayer();
-                Debug.Log("Player " + MatchController.GetCurrentPlayer().Color + " won! ");
-            }
-            else if (MatchController.IsPlayersQueueEmpty())
-            {
-                GameOver = true;
-                Debug.Log("Cthulhu ftaghn! ");
-            }
-            else
-            {
-                StartCoroutine(RoundCoroutine());
-            }
+            StartCoroutine(RoundCoroutine());
         }
 
         private IEnumerator RoundCoroutine()
@@ -155,12 +144,14 @@ namespace Assets.Scripts.Contollers
                 unit.SetAllowControll(false);
                 unit.SetScopeVisibility(false);
             }
-            _timeFrozen = true;
+            TimeFrozen = true;
+            CurrentWeaponController.SetCurrentWeapon(ShootService.GetNoneWeapon());
+            EndMatchIfNeeded();
         }
 
         private void RoundStart()
         {
-            _timeFrozen = false;
+            TimeFrozen = false;
             _roundStart = Time.time;
             MatchController.DequeuePlayer();
             var unit = MatchController.GetCurrenUnit();
@@ -169,13 +160,14 @@ namespace Assets.Scripts.Contollers
 
             CameraService.SetCameraFollowAndRotationTarget(unit.UnitTransform);
 
-            WeaponController.ResetPower();
-            WeaponController.SetCurrentWeapon(ShootService.GetNoneWeapon());
+            CurrentWeaponController.ResetPower();
+            CurrentWeaponController.SetCurrentWeapon(ShootService.GetNoneWeapon());
 
             if (RoundChangedEvent != null)
             {
                 RoundChangedEvent.Invoke(this, new EventArgs());
             }
+            EndMatchIfNeeded();
         }
     }
 }

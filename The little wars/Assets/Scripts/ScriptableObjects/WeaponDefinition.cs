@@ -20,8 +20,7 @@ namespace Assets.Scripts.ScriptableObjects
         public AudioClip ClipOnExplode;
         public AudioClip ClipOnTimerCount;
         public AudioClip ClipOnButtonClicked;
-        public AudioClip ClipOnShot
-            ;
+        public AudioClip ClipOnShot;
         public int Damage;
 
         public bool CollideMapExplode;

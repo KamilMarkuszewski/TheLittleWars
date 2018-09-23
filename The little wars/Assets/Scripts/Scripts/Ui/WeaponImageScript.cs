@@ -34,7 +34,7 @@ namespace Assets.Scripts.Scripts.Ui
 
         void Start()
         {
-            GameObjectsProviderService.WeaponController.WeaponChangedEvent += OnWeaponChangedEvent;
+            GameObjectsProviderService.CurrentWeaponController.WeaponChangedEvent += OnWeaponChangedEvent;
         }
 
         private void OnWeaponChangedEvent(object sender, WeaponChangedEventArgs weaponChangedEventArgs)

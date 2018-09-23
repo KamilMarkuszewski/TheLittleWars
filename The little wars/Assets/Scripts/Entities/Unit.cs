@@ -32,18 +32,32 @@ namespace Assets.Scripts.Entities
         public Transform UnitTransform;
         public bool AllowControll { private set; get; }
 
-        private CharacterMoveScript _characterMoveScript;
-        private CharacterMoveScript CharacterMoveScript
+        private UnitMoveScript _unitMoveScript;
+        private UnitMoveScript UnitMoveScript
         {
             get
             {
-                if (_characterMoveScript == null)
+                if (_unitMoveScript == null)
                 {
-                    _characterMoveScript = UnitTransform.GetComponent<CharacterMoveScript>();
+                    _unitMoveScript = UnitTransform.GetComponent<UnitMoveScript>();
                 }
-                return _characterMoveScript;
+                return _unitMoveScript;
             }
         }
+
+        private UnitControllerBase _unitControllerBase;
+        private UnitControllerBase UnitControllerBase
+        {
+            get
+            {
+                if (_unitControllerBase == null)
+                {
+                    _unitControllerBase = UnitTransform.GetComponent<UnitControllerBase>();
+                }
+                return _unitControllerBase;
+            }
+        }
+
 
         private SpriteRenderer _spriteRenderer;
         private SpriteRenderer SpriteRenderer
@@ -78,12 +92,12 @@ namespace Assets.Scripts.Entities
         public void SetAllowControll(bool allowControll)
         {
             AllowControll = allowControll;
-            CharacterMoveScript.AllowControll = allowControll;
+            UnitControllerBase.AllowControll = allowControll;
         }
 
         public void SetScopeVisibility(bool visibility)
         {
-            CharacterMoveScript.SetScopeVisibility(visibility);
+            UnitMoveScript.SetScopeVisibility(visibility);
         }
 
         public void Instantiate(Transform characterPrefab, Vector3 spawnPosition, Color color)
@@ -91,7 +105,7 @@ namespace Assets.Scripts.Entities
             var createdCharacter = UnityEngine.Object.Instantiate(characterPrefab, GameObjectsProviderService.CharactersParentObject.transform);
             createdCharacter.transform.position = spawnPosition;
             UnitTransform = createdCharacter;
-            CharacterMoveScript.Unit = this;
+            UnitMoveScript.Unit = this;
 
             SetColor(color);
             SetAllowControll(false);

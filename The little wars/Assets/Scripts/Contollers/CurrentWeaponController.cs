@@ -6,21 +6,36 @@ using Assets.Scripts.Constants;
 using Assets.Scripts.Contollers.Models;
 using Assets.Scripts.Entities.EventArgs;
 using Assets.Scripts.ScriptableObjects;
+using Assets.Scripts.Services;
 using UnityEngine;
 
 namespace Assets.Scripts.Contollers
 {
-    public class WeaponController
+    public class CurrentWeaponController
     {
+        #region Services
+
+        private GameObjectsProviderService GameObjectsProviderService
+        {
+            get { return ServiceLocator.GetService<GameObjectsProviderService>(); }
+        }
+
+        private SoundService SoundService
+        {
+            get { return ServiceLocator.GetService<SoundService>(); }
+        }
+
+        #endregion
+
         public event EventHandler<IncrementPowerEventArgs> IncrementPowerEvent;
         public event EventHandler<EventArgs> ResetPowerEvent;
         public event EventHandler<WeaponChangedEventArgs> WeaponChangedEvent;
 
-        private readonly WeaponModel _model;
+        private readonly CurrentWeaponModel _model;
 
-        public WeaponController()
+        public CurrentWeaponController(CurrentWeaponModel model)
         {
-            _model = new WeaponModel();
+            _model = model;
         }
         
         public void IncrementPower()
@@ -59,10 +74,14 @@ namespace Assets.Scripts.Contollers
 
         public void SetCurrentWeapon(WeaponDefinition definition)
         {
-            _model.CurrentWeapon = definition.WeaponEnum;
-            if (WeaponChangedEvent != null)
+            if (!GameObjectsProviderService.MainGameController.TimeFrozen)
             {
-                WeaponChangedEvent.Invoke(this, new WeaponChangedEventArgs(definition.WeaponEnum, definition.Sprite));
+                _model.CurrentWeapon = definition.WeaponEnum;
+                if (WeaponChangedEvent != null)
+                {
+                    WeaponChangedEvent.Invoke(this, new WeaponChangedEventArgs(definition.WeaponEnum, definition.Sprite));
+                }
+                SoundService.PlayClip(definition.ClipOnButtonClicked);
             }
         }
     }

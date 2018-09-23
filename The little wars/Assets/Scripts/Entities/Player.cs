@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Assets.Scripts.Constants;
 using Assets.Scripts.Services;
 using UnityEngine;
 
@@ -19,13 +20,17 @@ namespace Assets.Scripts.Entities
         #endregion
 
         public Color Color;
+        public int Team;
+        public PlayerType PlayerType;
         public List<Unit> Units = new List<Unit>();
 
-        public Player(Color color, int unitsAmount, List<Vector3> spawns, Transform characterPrefab)
+        public Player(PlayerCreationEntity playerCreationEntity, List<Vector3> spawns, Transform characterPrefab)
         {
-            Color = color;
+            Team = playerCreationEntity.Team;
+            PlayerType = playerCreationEntity.PlayerType;
+            Color = playerCreationEntity.Color;
 
-            for (int i = 0; i < unitsAmount; i++)
+            for (int i = 0; i < playerCreationEntity.UnitsNumber; i++)
             {
                 var unit = new Unit();
                 Units.Add(unit);
@@ -37,20 +42,6 @@ namespace Assets.Scripts.Entities
         public bool HasAliveUnits()
         {
             return Units.Any(u => u.IsAlive());
-        }
-    }
-
-
-
-    public class PlayerInitValues
-    {
-        public Color Color;
-        public int UnitsCount;
-
-        public PlayerInitValues(Color color, int unitsCount)
-        {
-            Color = color;
-            UnitsCount = unitsCount;
         }
     }
 }

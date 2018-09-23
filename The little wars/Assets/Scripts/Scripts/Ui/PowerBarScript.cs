@@ -33,8 +33,8 @@ namespace Assets.Scripts.Scripts.Ui
         {
             Reset();
             _audioSource = SoundService.GetAudioSourceFromPool();
-            GameObjectsProviderService.WeaponController.IncrementPowerEvent += OnIncrementPowerEvent;
-            GameObjectsProviderService.WeaponController.ResetPowerEvent += OnResetPowerEvent;
+            GameObjectsProviderService.CurrentWeaponController.IncrementPowerEvent += OnIncrementPowerEvent;
+            GameObjectsProviderService.CurrentWeaponController.ResetPowerEvent += OnResetPowerEvent;
         }
 
         private void OnResetPowerEvent(object sender, EventArgs eventArgs)

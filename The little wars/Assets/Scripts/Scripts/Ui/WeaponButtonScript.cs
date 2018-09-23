@@ -6,7 +6,7 @@ using Assets.Scripts.ScriptableObjects;
 using Assets.Scripts.Services;
 using UnityEngine;
 
-namespace Assets.Scripts.Scripts
+namespace Assets.Scripts.Scripts.Ui
 {
     public class WeaponButtonScript : MonoBehaviour
     {
@@ -17,19 +17,13 @@ namespace Assets.Scripts.Scripts
             get { return ServiceLocator.GetService<GameObjectsProviderService>(); }
         }
 
-        private SoundService SoundService
-        {
-            get { return ServiceLocator.GetService<SoundService>(); }
-        }
-
         #endregion
 
         public WeaponDefinition WeaponDefinition;
 
         public void SetWeaponAsCurrent()
         {
-            GameObjectsProviderService.WeaponController.SetCurrentWeapon(WeaponDefinition);
-            SoundService.PlayClip(WeaponDefinition.ClipOnButtonClicked);
+            GameObjectsProviderService.CurrentWeaponController.SetCurrentWeapon(WeaponDefinition);
         }
     }
 }

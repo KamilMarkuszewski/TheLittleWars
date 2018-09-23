@@ -23,8 +23,9 @@ GameObject:
   - component: {fileID: 50658194668397888}
   - component: {fileID: 114227145851015336}
   - component: {fileID: 70752885719171304}
+  - component: {fileID: 114821248063011394}
   m_Layer: 0
-  m_Name: CharacterPrefab
+  m_Name: AiUnit1Prefab
   m_TagString: Unit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -161,12 +162,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c075147c3abd924785a5c1eb6e85596, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AllowControll: 0
   MoveSpeed: 0.04
   Scope: {fileID: 4104203143531252}
   CharacterSprite: {fileID: 4183704435722736}
-  _isGroundedForJump: 0
-  _isGroundedForWalk: 0
+--- !u!114 &114821248063011394
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1156440202944296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07ed592ca92121541a21cd2f68b560a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AllowControll: 0
+  UsedWeapon: {fileID: 11400000, guid: dcafd4571582878468ce726c1d29fca6, type: 2}
 --- !u!212 &212409419499890378
 SpriteRenderer:
   m_ObjectHideFlags: 1

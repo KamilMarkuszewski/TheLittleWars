@@ -6,7 +6,7 @@ using Assets.Scripts.Constants;
 
 namespace Assets.Scripts.Contollers.Models
 {
-    public class WeaponModel
+    public class CurrentWeaponModel
     {
         public int MaxPower = 24;
         public int CurrentPower;

@@ -13,9 +13,9 @@ namespace Assets.Scripts.Services
 {
     public class GameObjectsProviderService : IService
     {
-        public WeaponController WeaponController
+        public CurrentWeaponController CurrentWeaponController
         {
-            get { return MainGameController.WeaponController; }
+            get { return MainGameController.CurrentWeaponController; }
         }
 
         private MainGameController _mainGameController;

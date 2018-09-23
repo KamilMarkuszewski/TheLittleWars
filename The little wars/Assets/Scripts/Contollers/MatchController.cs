@@ -4,16 +4,47 @@ using System.Linq;
 using System.Text;
 using Assets.Scripts.Contollers.Models;
 using Assets.Scripts.Entities;
+using Assets.Scripts.Services;
+using Assets.Scripts.Utility;
+using UnityEngine;
 
 namespace Assets.Scripts.Contollers
 {
     public class MatchController
     {
+        #region Services
+
+        private SpawnsService SpawnsService
+        {
+            get { return ServiceLocator.GetService<SpawnsService>(); }
+        }
+
+        #endregion
+
         private readonly MatchModel _model;
 
-        public MatchController(params PlayerInitValues[] playerInitValues)
+        public MatchController(MatchModel model, ICollection<PlayerCreationEntity> playerCreationEntities)
         {
-            _model = new MatchModel(playerInitValues);
+            _model = model;
+
+            CreatePlayersUnits(playerCreationEntities);
+        }
+
+        private void CreatePlayersUnits(ICollection<PlayerCreationEntity> playerCreationEntities)
+        {
+            var prefabs = new UnitPrefabsContainer();
+            var spawns = SpawnsService.GetSpawns();
+            foreach (var initValues in playerCreationEntities)
+            {
+                var p = CreatePlayerUnits(playerCreationEntities.Count, initValues, spawns, prefabs);
+                _model.Players.Add(p);
+                _model.PlayersQueue.Enqueue(new PlayerQueue(p));
+            }
+        }
+
+        private static Player CreatePlayerUnits(int playersCount, PlayerCreationEntity playerCreationEntity, List<Vector3> spawns, UnitPrefabsContainer prefabs)
+        {
+            return new Player(playerCreationEntity, spawns, prefabs.GetNextFreeUnitPrefab(playersCount, playerCreationEntity.PlayerType));
         }
 
         public void EnqueuePlayer()
@@ -78,12 +109,12 @@ namespace Assets.Scripts.Contollers
 
         public bool IsPlayersQueueEmpty()
         {
-            return !_model.PlayersQueue.Any();
+            return !_model.Players.Any(p => p.HasAliveUnits());
         }
 
-        public bool HasPlayersQueueOnlyOneElement()
+        public bool HasPlayersQueueOnlyOneTeam()
         {
-            return _model.PlayersQueue.Count == 1;
+            return _model.Players.GroupBy(players => players.Team).Count(g => g.Any(queue => queue.HasAliveUnits())) == 1;
         }
 
         public Unit GetCurrenUnit()

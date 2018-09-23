@@ -6,7 +6,7 @@ using Assets.Scripts.Constants;
 using Assets.Scripts.Services;
 using UnityEngine;
 
-namespace Assets.Scripts.Contollers
+namespace Assets.Scripts.Utility
 {
     public class UnitPrefabsContainer
     {
@@ -19,42 +19,60 @@ namespace Assets.Scripts.Contollers
 
         #endregion
 
-        private Queue<Transform> _unitPrefabs;
-        public Queue<Transform> UnitPrefabs
+        private Queue<Transform> _humanUnitPrefabs;
+        public Queue<Transform> HumanUnitPrefabs
         {
             get
             {
-                if (_unitPrefabs == null)
+                if (_humanUnitPrefabs == null)
                 {
-                    _unitPrefabs = new Queue<Transform>();
-                    ResourcesService.LoadUnitPrefabs(ResourcesPaths.Units).ForEach(prefab => _unitPrefabs.Enqueue(prefab));
+                    _humanUnitPrefabs = new Queue<Transform>();
+                    ResourcesService.LoadUnitPrefabs(ResourcesPaths.Units).Where(t => t.name.Contains("HumanUnit")).ToList().ForEach(prefab => _humanUnitPrefabs.Enqueue(prefab));
                 }
-                return _unitPrefabs;
+                return _humanUnitPrefabs;
             }
         }
 
-        public Transform GetNextFreeUnitPrefab(int playersCount)
+        private Queue<Transform> _aiUnitPrefabs;
+        public Queue<Transform> AiUnitPrefabs
         {
-            if (UnitPrefabs.Count >= playersCount)
+            get
             {
-                if (_unitPrefabs.Any())
+                if (_aiUnitPrefabs == null)
                 {
-                    return _unitPrefabs.Dequeue();
+                    _aiUnitPrefabs = new Queue<Transform>();
+                    ResourcesService.LoadUnitPrefabs(ResourcesPaths.Units).Where(t => t.name.Contains("AiUnit")).ToList().ForEach(prefab => _aiUnitPrefabs.Enqueue(prefab));
+                }
+                return _aiUnitPrefabs;
+            }
+        }
+
+
+
+        public Transform GetNextFreeUnitPrefab(int playersCount, PlayerType type)
+        {
+            Queue<Transform> chosenQueue = type == PlayerType.Human ? HumanUnitPrefabs : AiUnitPrefabs;
+
+            if (chosenQueue.Count >= playersCount)
+            {
+                if (chosenQueue.Any())
+                {
+                    return chosenQueue.Dequeue();
                 }
                 else
                 {
                     throw new UnityException("Not enought unit prefabs in folder" + ResourcesPaths.Units);
                 }
             }
-            else if (UnitPrefabs.Any())
+            else if (chosenQueue.Any())
             {
-                return UnitPrefabs.First();
+                return chosenQueue.First();
             }
             else
             {
                 throw new UnityException("No unit prefabs in folder " + ResourcesPaths.Units);
             }
         }
-        
+
     }
 }
