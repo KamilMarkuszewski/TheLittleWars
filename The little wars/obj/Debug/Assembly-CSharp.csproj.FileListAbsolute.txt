@@ -336,3 +336,7 @@ H:\workspace\GitRepo\TheLittleWars\The little wars\obj\Debug\Assembly-CSharp.csp
 H:\workspace\GitRepo\TheLittleWars\The little wars\obj\Debug\Assembly-CSharp.csproj.CopyComplete
 H:\workspace\GitRepo\TheLittleWars\The little wars\obj\Debug\Assembly-CSharp.dll
 H:\workspace\GitRepo\TheLittleWars\The little wars\obj\Debug\Assembly-CSharp.pdb
+H:\workspace\GitRepo\TheLittleWars\The little wars\Temp\bin\Debug\Photon3Unity3D.dll
+H:\workspace\GitRepo\TheLittleWars\The little wars\Temp\bin\Debug\websocket-sharp.dll
+H:\workspace\GitRepo\TheLittleWars\The little wars\Temp\bin\Debug\Photon3Unity3D.pdb
+H:\workspace\GitRepo\TheLittleWars\The little wars\Temp\bin\Debug\Photon3Unity3D.xml

@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Assets.Scripts.Constants
 {
+    [Serializable]
     public enum PlayerType
     {
         None = 0,

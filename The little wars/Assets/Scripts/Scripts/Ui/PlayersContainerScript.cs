@@ -11,6 +11,8 @@ namespace Assets.Scripts.Scripts.Ui
 {
     public class PlayersContainerScript : MonoBehaviour
     {
+        public PlayerType Type;
+
         public PlayerCreationEntity GetPlayerCreationEntity()
         {
             Color color = Color.gray;
@@ -29,16 +31,23 @@ namespace Assets.Scripts.Scripts.Ui
             return new PlayerCreationEntity(color, playerType, unitsNumber, team);
         }
 
-        private static void TryGetType(GameObject child, ref PlayerType playerType)
+        private void TryGetType(GameObject child, ref PlayerType playerType)
         {
-            int chosenItem = 0;
-            if (TryGetValueFromDropdown(child, "TypeDropdown", ref chosenItem))
+            if (Type == PlayerType.None)
             {
-                playerType = (PlayerType)(chosenItem + 1);
+                int chosenItem = 0;
+                if (TryGetValueFromDropdown(child, "TypeDropdown", ref chosenItem))
+                {
+                    playerType = (PlayerType) (chosenItem + 1);
+                }
+            }
+            else
+            {
+                playerType = Type;
             }
         }
 
-        private static void TryGetTeam(GameObject child, ref int team)
+        private void TryGetTeam(GameObject child, ref int team)
         {
             int chosenItem = 0;
             if (TryGetValueFromDropdown(child, "TeamDropdown", ref chosenItem))
@@ -48,7 +57,7 @@ namespace Assets.Scripts.Scripts.Ui
         }
 
 
-        private static void TryGetUnitsNumber(GameObject child, ref int unitsNumber)
+        private void TryGetUnitsNumber(GameObject child, ref int unitsNumber)
         {
             int chosenItem = 0;
             if (TryGetValueFromDropdown(child, "UnitsNumberDropdown", ref chosenItem))
@@ -57,7 +66,7 @@ namespace Assets.Scripts.Scripts.Ui
             }
         }
 
-        private static bool TryGetValueFromDropdown(GameObject child, string gameObjectName, ref int chosenItem)
+        private bool TryGetValueFromDropdown(GameObject child, string gameObjectName, ref int chosenItem)
         {
             if (child.name.Equals(gameObjectName))
             {
@@ -68,7 +77,7 @@ namespace Assets.Scripts.Scripts.Ui
             return false;
         }
 
-        private static void TryGetColor(GameObject child, ref Color color)
+        private void TryGetColor(GameObject child, ref Color color)
         {
             if (child.name.Equals("ColorImage"))
             {
@@ -88,6 +97,57 @@ namespace Assets.Scripts.Scripts.Ui
                 {
                     var img = child.GetComponent<Image>();
                     img.color = color;
+                }
+            }
+        }
+
+        public bool TryGetColor(out Color color)
+        {
+            foreach (Transform child in transform)
+            {
+                if (child.name.Equals("ColorImage"))
+                {
+                    var img = child.GetComponent<Image>();
+                    color = img.color;
+                    return true;
+                }
+            }
+            color = Color.black;
+            return false;
+        }
+
+
+        public void SetPlayerName(string playerName)
+        {
+            foreach (Transform child in transform)
+            {
+                if (child.name.Equals("NameText"))
+                {
+                    var text = child.GetComponent<Text>();
+                    text.text = playerName;
+                }
+            }
+        }
+
+        public void SetTeam(int team)
+        {
+            SetDropdownValue("TeamDropdown", team);
+        }
+
+
+        public void SetUnitsNumber(int unitsNumber)
+        {
+            SetDropdownValue("UnitsNumberDropdown", unitsNumber);
+        }
+
+        private void SetDropdownValue(string gameObjectName, int val)
+        {
+            foreach (Transform child in transform)
+            {
+                if (child.name.Equals(gameObjectName))
+                {
+                    var dropdownComponent = child.GetComponent<Dropdown>();
+                    dropdownComponent.value = val;
                 }
             }
         }

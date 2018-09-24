@@ -206,7 +206,7 @@ GameObject:
   - component: {fileID: 114311109899330808}
   - component: {fileID: 114347419716468080}
   m_Layer: 0
-  m_Name: MainMenuNewPlayerPanel
+  m_Name: MainMenuLocalPlayerPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -28,7 +28,7 @@ namespace Assets.Scripts.Entities
         {
             Team = playerCreationEntity.Team;
             PlayerType = playerCreationEntity.PlayerType;
-            Color = playerCreationEntity.Color;
+            Color = playerCreationEntity.GetColor();
 
             for (int i = 0; i < playerCreationEntity.UnitsNumber; i++)
             {
