@@ -19,7 +19,7 @@ namespace Assets.Scripts.Scripts.Ui
     public class MainMenuUiScript : MonoBehaviourPunCallbacks
     {
         private byte _maxPlayersNumber = 8;
-        private bool _inLobby = false;
+        private bool _inLobby;
         private string _playerName;
 
         private PlayerColorsHelper _playerColorsHelper;
