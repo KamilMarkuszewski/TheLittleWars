@@ -338,3 +338,4 @@ H:\workspace\GitRepo\TheLittleWars\The little wars\Temp\bin\Debug\Photon3Unity3D
 H:\workspace\GitRepo\TheLittleWars\The little wars\Temp\bin\Debug\websocket-sharp.dll
 H:\workspace\GitRepo\TheLittleWars\The little wars\Temp\bin\Debug\Photon3Unity3D.pdb
 H:\workspace\GitRepo\TheLittleWars\The little wars\Temp\bin\Debug\Photon3Unity3D.xml
+H:\workspace\GitRepo\TheLittleWars\The little wars\Temp\bin\Debug\Facebook.Unity.Settings.dll

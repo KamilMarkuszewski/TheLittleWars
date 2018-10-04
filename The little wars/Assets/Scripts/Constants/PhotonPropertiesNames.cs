@@ -8,5 +8,6 @@ namespace Assets.Scripts.Constants
     public class PhotonPropertiesNames
     {
         public const string AiPlayers = "AiPlayers";
+        public const string HumanPlayers = "HumanPlayers";
     }
 }

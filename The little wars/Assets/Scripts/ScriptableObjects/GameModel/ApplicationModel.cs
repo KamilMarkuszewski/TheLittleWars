@@ -16,8 +16,8 @@ namespace Assets.Scripts.ScriptableObjects.GameModel
         {
             PlayersToCreate = new List<PlayerCreationEntity>
             {
-                new PlayerCreationEntity(Color.red, PlayerType.Human, 3, 1),
-                new PlayerCreationEntity(Color.green, PlayerType.Human, 3, 2)
+                new PlayerCreationEntity(Color.red, PlayerType.LocalPlayer, 3, 1, "player 1"),
+                new PlayerCreationEntity(Color.green, PlayerType.LocalPlayer, 3, 2, "player 2")
             };
             MatchModel = new MatchModel();
             CurrentWeaponModel = new CurrentWeaponModel();

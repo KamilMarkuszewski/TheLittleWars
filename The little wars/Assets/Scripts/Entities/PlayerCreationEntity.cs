@@ -16,6 +16,7 @@ namespace Assets.Scripts.Entities
         public PlayerType PlayerType;
         public int UnitsNumber;
         public int Team;
+        public string PlayerName;
 
         public Dictionary<string, object> AsDistionary()
         {
@@ -26,7 +27,8 @@ namespace Assets.Scripts.Entities
                 {"_blue", _blue},
                 {"PlayerType", PlayerType},
                 {"UnitsNumber", UnitsNumber},
-                {"Team", Team}
+                {"Team", Team},
+                {"PlayerName", PlayerName}
             };
         }
 
@@ -38,11 +40,12 @@ namespace Assets.Scripts.Entities
                 (float)source["_blue"],
                 (PlayerType)source["PlayerType"],
                 (int)source["UnitsNumber"],
-                (int)source["Team"]
+                (int)source["Team"],
+                (string)source["PlayerName"]
             );
         }
 
-        public PlayerCreationEntity(float red, float green, float blue, PlayerType playerType, int unitsNumber, int team)
+        public PlayerCreationEntity(float red, float green, float blue, PlayerType playerType, int unitsNumber, int team, string playerName)
         {
             _red = red;
             _green = green;
@@ -50,9 +53,10 @@ namespace Assets.Scripts.Entities
             PlayerType = playerType;
             UnitsNumber = unitsNumber;
             Team = team;
+            PlayerName = playerName;
         }
 
-        public PlayerCreationEntity(Color color, PlayerType playerType, int unitsNumber, int team)
+        public PlayerCreationEntity(Color color, PlayerType playerType, int unitsNumber, int team, string playerName)
         {
             _red = color.r;
             _green = color.g;
@@ -60,6 +64,7 @@ namespace Assets.Scripts.Entities
             PlayerType = playerType;
             UnitsNumber = unitsNumber;
             Team = team;
+            PlayerName = playerName;
         }
 
         public Color GetColor()

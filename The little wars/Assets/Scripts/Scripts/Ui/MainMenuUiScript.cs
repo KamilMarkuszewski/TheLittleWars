@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Assets.Scripts.Constants;
 using Assets.Scripts.Entities;
+using Assets.Scripts.ExtensionMethods;
 using Assets.Scripts.ScriptableObjects.GameModel;
 using Assets.Scripts.Utility;
 using ExitGames.Client.Photon;
@@ -101,9 +102,14 @@ namespace Assets.Scripts.Scripts.Ui
 
         public void StartLocalGame()
         {
+            StartGame(LocalGamePlayersContainer);
+        }
+
+        private void StartGame(GameObject playersContainer)
+        {
             ApplicationModel.ResetMatch();
             ApplicationModel.PlayersToCreate.Clear();
-            foreach (Transform child in LocalGamePlayersContainer.transform)
+            foreach (Transform child in playersContainer.transform)
             {
                 PlayersContainerScript container = child.GetComponent<PlayersContainerScript>();
                 if (container != null)
@@ -112,6 +118,14 @@ namespace Assets.Scripts.Scripts.Ui
                 }
             }
             SceneManager.LoadScene(SceneNames.PlayScene);
+        }
+
+        public void StartWebGame()
+        {
+            if (IsCurrentPlayerRoomOwner())
+            {
+                StartGame(WebGamePlayersContainer);
+            }
         }
 
         public void OpenSettings()
@@ -166,9 +180,31 @@ namespace Assets.Scripts.Scripts.Ui
             PhotonNetwork.Disconnect();
         }
 
+        private void RemoveHumanFromRoomHashtable(PlayerCreationEntity player)
+        {
+            var humanPlayers = CurrentRoomGetCustomPropertyPlayers(PhotonPropertiesNames.HumanPlayers);
+            humanPlayers.Remove(player.GetColor().ToString());
+            var hash = new Hashtable
+            {
+                {PhotonPropertiesNames.HumanPlayers, humanPlayers}
+            };
+            PhotonNetwork.CurrentRoom.SetCustomProperties(hash);
+        }
+
+        private void AddHumanToRoomHashtable(PlayerCreationEntity player)
+        {
+            var humanPlayers = CurrentRoomGetCustomPropertyPlayers(PhotonPropertiesNames.HumanPlayers);
+            humanPlayers.Add(player.GetColor().ToString(), player.AsDistionary());
+            var hash = new Hashtable
+            {
+                {PhotonPropertiesNames.HumanPlayers, humanPlayers}
+            };
+            PhotonNetwork.CurrentRoom.SetCustomProperties(hash);
+        }
+
         private void AddBotToRoomHashtable(PlayerCreationEntity player)
         {
-            var aiPlayers = CurrentRoomGetAiPlayers();
+            var aiPlayers = CurrentRoomGetCustomPropertyPlayers(PhotonPropertiesNames.AiPlayers);
             aiPlayers.Add(player.GetColor().ToString(), player.AsDistionary());
             var hash = new Hashtable
             {
@@ -177,20 +213,34 @@ namespace Assets.Scripts.Scripts.Ui
             PhotonNetwork.CurrentRoom.SetCustomProperties(hash);
         }
 
-        private static Dictionary<string, object> CurrentRoomGetAiPlayers()
+        private static Dictionary<string, object> CurrentRoomGetCustomPropertyPlayers(string propName)
         {
-            return (Dictionary<string, object>)PhotonNetwork.CurrentRoom.CustomProperties[PhotonPropertiesNames.AiPlayers] ?? new Dictionary<string, object>();
+            return (Dictionary<string, object>)PhotonNetwork.CurrentRoom.CustomProperties[propName] ?? new Dictionary<string, object>();
         }
 
         public void WebGameAddNewAiPlayer()
         {
-            if (PhotonNetwork.LocalPlayer.IsMasterClient)
+            if (IsCurrentPlayerRoomOwner())
             {
                 if (WebGamePlayersContainer.transform.childCount < _maxPlayersNumber)
                 {
-                    WebGameCreateAiPlayerContainer();
+                    WebGameCreateAiPlayerContainerHost();
                 }
             }
+        }
+
+        private PlayerCreationEntity GetPlayerCreationEntityByName(string playerName)
+        {
+            foreach (Transform child in WebGamePlayersContainer.transform)
+            {
+                PlayersContainerScript playersContainerScript = child.GetComponent<PlayersContainerScript>();
+                var ent = playersContainerScript.GetPlayerCreationEntity();
+                if (ent.PlayerName.Equals(playerName))
+                {
+                    return ent;
+                }
+            }
+            return null;
         }
 
         private void WebGameCreateAiPlayerContainer(PlayerCreationEntity playerCreationEntity)
@@ -203,7 +253,18 @@ namespace Assets.Scripts.Scripts.Ui
             playerContainer.SetUnitsNumber(playerCreationEntity.UnitsNumber);
         }
 
-        private void WebGameCreateAiPlayerContainer()
+        private void WebGameCreateHumanPlayerContainer(PlayerCreationEntity playerCreationEntity)
+        {
+            var createdObject = Instantiate(WebGameNewPlayerHumanPrefab, WebGamePlayersContainer.transform);
+            var playerContainer = createdObject.GetComponent<PlayersContainerScript>();
+            var color = playerCreationEntity.GetColor();
+            playerContainer.SetColor(color);
+            playerContainer.SetTeam(playerCreationEntity.Team);
+            playerContainer.SetUnitsNumber(playerCreationEntity.UnitsNumber);
+            playerContainer.SetPlayerName(playerCreationEntity.PlayerName);
+        }
+
+        private void WebGameCreateAiPlayerContainerHost()
         {
             var createdObject = Instantiate(WebGameNewPlayerAiPrefab, WebGamePlayersContainer.transform);
             var playerContainer = createdObject.GetComponent<PlayersContainerScript>();
@@ -253,24 +314,47 @@ namespace Assets.Scripts.Scripts.Ui
 
         private void WebGameRefreshPlayersList()
         {
+            WebGameRefreshHostGuestList();
+        }
+
+        private void WebGameRefreshHostGuestList()
+        {
             foreach (Transform child in WebGamePlayersContainer.transform)
             {
-                PlayersContainerScript playersContainerScript = child.GetComponent<PlayersContainerScript>();
-                Color color;
-                if (playersContainerScript.TryGetColor(out color))
-                {
-                    _playerColorsHelper.PutColorBack(color);
-                }
                 Destroy(child.gameObject);
             }
-            var aiPlayers = CurrentRoomGetAiPlayers();
+            var aiPlayers = CurrentRoomGetCustomPropertyPlayers(PhotonPropertiesNames.AiPlayers);
+            var humanPlayers = CurrentRoomGetCustomPropertyPlayers(PhotonPropertiesNames.HumanPlayers);
 
             foreach (var el in aiPlayers)
             {
                 var dict = (Dictionary<string, object>)el.Value;
                 WebGameCreateAiPlayerContainer(PlayerCreationEntity.FromDictionary(dict));
-            };
-            PhotonNetwork.PlayerList.ToList().ForEach(player => WebGameCreateHumanPlayerContainer(player.NickName));
+            }
+
+            foreach (var el in humanPlayers)
+            {
+                var dict = (Dictionary<string, object>)el.Value;
+                WebGameCreateHumanPlayerContainer(PlayerCreationEntity.FromDictionary(dict));
+            }
+        }
+
+        private List<Color> GetPlayersColors()
+        {
+            var colors = new List<Color>();
+            foreach (Transform child in WebGamePlayersContainer.transform)
+            {
+                PlayersContainerScript playersContainerScript = child.GetComponent<PlayersContainerScript>();
+                if (playersContainerScript.Type.In(PlayerType.LocalPlayer, PlayerType.RemotePlayer))
+                {
+                    Color color;
+                    if (playersContainerScript.TryGetColor(out color))
+                    {
+                        colors.Add(color);
+                    }
+                }
+            }
+            return colors;
         }
 
         #region Photon
@@ -326,10 +410,27 @@ namespace Assets.Scripts.Scripts.Ui
             }
         }
 
+        public override void OnCreatedRoom()
+        {
+            base.OnCreatedRoom();
+            WebGameCreateHumanPlayerContainer(PhotonNetwork.NickName);
+            var entity = GetPlayerCreationEntityByName(PhotonNetwork.NickName);
+            if (entity != null)
+            {
+                AddHumanToRoomHashtable(entity);
+            }
+        }
+
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
             Debug.Log("OnPlayerEnteredRoom");
             base.OnPlayerEnteredRoom(newPlayer);
+            if (IsCurrentPlayerRoomOwner())
+            {
+                WebGameCreateHumanPlayerContainer(newPlayer.NickName);
+                var entity = GetPlayerCreationEntityByName(newPlayer.NickName);
+                AddHumanToRoomHashtable(entity);
+            }
             WebGameRefreshPlayersList();
         }
 
@@ -337,7 +438,18 @@ namespace Assets.Scripts.Scripts.Ui
         {
             Debug.Log("OnPlayerLeftRoom");
             base.OnPlayerLeftRoom(otherPlayer);
+            if (IsCurrentPlayerRoomOwner())
+            {
+                var entity = GetPlayerCreationEntityByName(otherPlayer.NickName);
+                _playerColorsHelper.PutColorBack(entity.GetColor());
+                RemoveHumanFromRoomHashtable(entity);
+            }
             WebGameRefreshPlayersList();
+        }
+
+        private static bool IsCurrentPlayerRoomOwner()
+        {
+            return PhotonNetwork.LocalPlayer.IsMasterClient;
         }
 
         public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
@@ -345,6 +457,7 @@ namespace Assets.Scripts.Scripts.Ui
             base.OnRoomPropertiesUpdate(propertiesThatChanged);
             WebGameRefreshPlayersList();
         }
+
 
         #endregion
 

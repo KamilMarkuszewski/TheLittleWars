@@ -19,6 +19,7 @@ namespace Assets.Scripts.Scripts.Ui
             PlayerType playerType = PlayerType.None;
             int unitsNumber = 0;
             int team = 0;
+            string playerName = String.Empty;
 
             foreach (Transform child in transform)
             {
@@ -26,9 +27,10 @@ namespace Assets.Scripts.Scripts.Ui
                 TryGetType(child.gameObject, ref playerType);
                 TryGetUnitsNumber(child.gameObject, ref unitsNumber);
                 TryGetTeam(child.gameObject, ref team);
+                TryGetPlayerName(out playerName);
             }
 
-            return new PlayerCreationEntity(color, playerType, unitsNumber, team);
+            return new PlayerCreationEntity(color, playerType, unitsNumber, team, playerName);
         }
 
         private void TryGetType(GameObject child, ref PlayerType playerType)
@@ -38,7 +40,7 @@ namespace Assets.Scripts.Scripts.Ui
                 int chosenItem = 0;
                 if (TryGetValueFromDropdown(child, "TypeDropdown", ref chosenItem))
                 {
-                    playerType = (PlayerType) (chosenItem + 1);
+                    playerType = (PlayerType)(chosenItem + 1);
                 }
             }
             else
@@ -116,6 +118,22 @@ namespace Assets.Scripts.Scripts.Ui
             return false;
         }
 
+
+
+        public bool TryGetPlayerName(out string playerName)
+        {
+            foreach (Transform child in transform)
+            {
+                if (child.name.Equals("NameText"))
+                {
+                    var text = child.GetComponent<Text>();
+                    playerName = text.text;
+                    return true;
+                }
+            }
+            playerName = String.Empty;
+            return false;
+        }
 
         public void SetPlayerName(string playerName)
         {

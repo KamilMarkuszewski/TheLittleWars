@@ -27,9 +27,23 @@ namespace Assets.Scripts.Utility
                 if (_humanUnitPrefabs == null)
                 {
                     _humanUnitPrefabs = new Queue<Transform>();
-                    ResourcesService.LoadUnitPrefabs(ResourcesPaths.Units).Where(t => t.name.Contains("HumanUnit")).ToList().ForEach(prefab => _humanUnitPrefabs.Enqueue(prefab));
+                    ResourcesService.LoadUnitPrefabs(ResourcesPaths.Units).Where(t => t.name.Contains("LocalUnit")).ToList().ForEach(prefab => _humanUnitPrefabs.Enqueue(prefab));
                 }
                 return _humanUnitPrefabs;
+            }
+        }
+
+        private Queue<Transform> _remoteUnitPrefabs;
+        public Queue<Transform> RemoteUnitPrefabs
+        {
+            get
+            {
+                if (_remoteUnitPrefabs == null)
+                {
+                    _remoteUnitPrefabs = new Queue<Transform>();
+                    ResourcesService.LoadUnitPrefabs(ResourcesPaths.Units).Where(t => t.name.Contains("RemoteUnit")).ToList().ForEach(prefab => _remoteUnitPrefabs.Enqueue(prefab));
+                }
+                return _remoteUnitPrefabs;
             }
         }
 
@@ -51,7 +65,7 @@ namespace Assets.Scripts.Utility
 
         public Transform GetNextFreeUnitPrefab(int playersCount, PlayerType type)
         {
-            Queue<Transform> chosenQueue = type == PlayerType.Human ? HumanUnitPrefabs : AiUnitPrefabs;
+            Queue<Transform> chosenQueue = GetPrefabsCollection(type);
 
             if (chosenQueue.Count >= playersCount)
             {
@@ -74,5 +88,19 @@ namespace Assets.Scripts.Utility
             }
         }
 
+        private Queue<Transform> GetPrefabsCollection(PlayerType type)
+        {
+            switch (type)
+            {
+                case PlayerType.LocalPlayer:
+                    return HumanUnitPrefabs;
+                case PlayerType.RemotePlayer:
+                    return RemoteUnitPrefabs;
+                case PlayerType.Ai:
+                    return AiUnitPrefabs;
+                default:
+                    throw new UnityException("Wrong player type");
+            }
+        }
     }
 }

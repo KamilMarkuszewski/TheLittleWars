@@ -11,3 +11,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e09d4280ae2cb5489f8db101c58226d, type: 3}
   m_Name: Model
   m_EditorClassIdentifier: 
+  PlayersToCreate:
+  - PlayerType: 1
+    UnitsNumber: 3
+    Team: 1
+  - PlayerType: 1
+    UnitsNumber: 3
+    Team: 2
