@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 114227145851015336}
   - component: {fileID: 70752885719171304}
   - component: {fileID: 114821248063011394}
+  - component: {fileID: 114716184471699258}
   m_Layer: 0
   m_Name: AiUnit1Prefab
   m_TagString: Unit
@@ -165,6 +166,27 @@ MonoBehaviour:
   MoveSpeed: 0.04
   Scope: {fileID: 4104203143531252}
   CharacterSprite: {fileID: 4183704435722736}
+--- !u!114 &114716184471699258
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1156440202944296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 0
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 0}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!114 &114821248063011394
 MonoBehaviour:
   m_ObjectHideFlags: 1

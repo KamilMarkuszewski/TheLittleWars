@@ -31,7 +31,7 @@ namespace Assets.Scripts.Scripts
 
         void FixedUpdate()
         {
-            if (UnityEngine.Random.Range(0, 200) == 0)
+            if (UnityEngine.Random.Range(0, 100) == 0)
             {
                 _isShooting = !_isShooting;
             }

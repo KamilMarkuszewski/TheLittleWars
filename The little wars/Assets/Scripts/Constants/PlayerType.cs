@@ -9,7 +9,8 @@ namespace Assets.Scripts.Constants
     public enum PlayerType
     {
         None = 0,
-        Human = 1,
-        Ai = 2
+        LocalPlayer = 1,
+        RemotePlayer = 2,
+        Ai = 3
     }
 }

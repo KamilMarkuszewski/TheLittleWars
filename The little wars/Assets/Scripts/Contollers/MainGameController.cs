@@ -31,6 +31,11 @@ namespace Assets.Scripts.Contollers
             get { return ServiceLocator.GetService<CameraService>(); }
         }
 
+        internal bool IsTimeFrozen()
+        {
+            return TimeFrozen;
+        }
+
         #endregion
 
         public MatchController MatchController;
