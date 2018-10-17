@@ -7,6 +7,7 @@ using Assets.Scripts.Contollers;
 using Assets.Scripts.ScriptableObjects;
 using Assets.Scripts.Services;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Assets.Scripts.Scripts.Ui
 {
@@ -25,6 +26,11 @@ namespace Assets.Scripts.Scripts.Ui
         }
 
         #endregion
+
+        void Enable()
+        {
+            Assert.IsNull(WeaponDefinition, "Component value is null");
+        }
 
         public WeaponDefinition WeaponDefinition;
 

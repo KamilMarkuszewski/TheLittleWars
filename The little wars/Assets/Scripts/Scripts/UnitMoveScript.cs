@@ -5,6 +5,7 @@ using System.Text;
 using Assets.Scripts.Entities;
 using Assets.Scripts.Services;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Assets.Scripts.Scripts
 {
@@ -25,7 +26,6 @@ namespace Assets.Scripts.Scripts
 
         #endregion
 
-        public Unit Unit;
         private bool _lookRight = true;
         private float _fireTimer;
 
@@ -40,6 +40,13 @@ namespace Assets.Scripts.Scripts
 
         public Transform Scope;
         public Transform CharacterSprite;
+
+
+        void Enable()
+        {
+            Assert.IsNull(Scope, "Component value is null");
+            Assert.IsNull(CharacterSprite, "Component value is null");
+        }
 
 
         // Use this for initialization
@@ -73,14 +80,9 @@ namespace Assets.Scripts.Scripts
             int power = GameObjectsProviderService.CurrentWeaponController.GetPower();
             if (power > 0)
             {
-                var direction = _lookRight ? Scope.right : Scope.right * -1;
-                ShootService.Shoot(GameObjectsProviderService.CurrentWeaponController.GetCurrentWeapon(), transform.position,
-                    direction.normalized, power);
                 GameObjectsProviderService.CurrentWeaponController.ResetPower();
-                if (ShootService.ShouldRoundEnd(GameObjectsProviderService.CurrentWeaponController.GetCurrentWeapon()))
-                {
-                    GameObjectsProviderService.MainGameController.NewRound();
-                }
+                var direction = _lookRight ? Scope.right : Scope.right * -1;
+                ShootService.Shoot(GameObjectsProviderService.CurrentWeaponController.GetCurrentWeapon(), transform.position,direction.normalized, power);
             }
         }
 

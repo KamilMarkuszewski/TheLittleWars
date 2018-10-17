@@ -1,18 +1,28 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Assets.Scripts.Constants;
 using Assets.Scripts.Contollers.Models;
 using Assets.Scripts.Entities;
+using Assets.Scripts.Scripts;
 using Assets.Scripts.Services;
 using Assets.Scripts.Utility;
+using Photon.Pun;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.Scripts.Contollers
 {
     public class MatchController
     {
         #region Services
+
+        private GameObjectsProviderService GameObjectsProviderService
+        {
+            get { return ServiceLocator.GetService<GameObjectsProviderService>(); }
+        }
 
         private SpawnsService SpawnsService
         {
@@ -26,42 +36,63 @@ namespace Assets.Scripts.Contollers
         public MatchController(MatchModel model, ICollection<PlayerCreationEntity> playerCreationEntities)
         {
             _model = model;
-
-            CreatePlayersUnits(playerCreationEntities);
-        }
-
-        private void CreatePlayersUnits(ICollection<PlayerCreationEntity> playerCreationEntities)
-        {
-            var prefabs = new UnitPrefabsContainer();
-            var spawns = SpawnsService.GetSpawns();
             foreach (var initValues in playerCreationEntities)
             {
-                var p = CreatePlayerUnits(playerCreationEntities.Count, initValues, spawns, prefabs);
-                _model.Players.Add(p);
-                _model.PlayersQueue.Enqueue(new PlayerQueue(p));
+                var player = new Player(initValues);
+                _model.Players.Add(player);
+            }
+            Debug.Log("_model.Players " + _model.Players.Count);
+        }
+
+        public void CreatePlayersUnits()
+        {
+            if (!PhotonNetwork.OfflineMode)
+            {
+                foreach (var player in _model.Players)
+                {
+                    if (player.PlayerType != PlayerType.Ai)
+                    {
+                        player.PlayerType = player.Name.Equals(PhotonNetwork.NickName) ? PlayerType.LocalPlayer : PlayerType.RemotePlayer;
+                    }
+                }
+            }
+            var spawns = SpawnsService.GetSpawns();
+            foreach (var player in _model.Players)
+            {
+                CreatePlayerUnits(player, player.UnitsCount, spawns);
+                _model.PlayersQueue.Enqueue(new PlayerQueue(player));
             }
         }
 
-        private static Player CreatePlayerUnits(int playersCount, PlayerCreationEntity playerCreationEntity, List<Vector3> spawns, UnitPrefabsContainer prefabs)
+        private void CreatePlayerUnits(Player player, int unitsCount, List<Vector3> spawns)
         {
-            return new Player(playerCreationEntity, spawns, prefabs.GetNextFreeUnitPrefab(playersCount, playerCreationEntity.PlayerType));
+            if (PhotonNetwork.OfflineMode || PhotonNetwork.LocalPlayer.IsMasterClient)
+            {
+                for (int i = 0; i < unitsCount; i++)
+                {
+                    GameObjectsProviderService.MainGameController.CreateUnit(SpawnsService.GetNextSpawn(spawns), player);
+                }
+            }
         }
 
         public void EnqueuePlayer()
         {
-            if (_model.CurrentPlayerQueue != null && _model.CurrentPlayerQueue.Player.HasAliveUnits())
+            if (PhotonNetwork.OfflineMode || PhotonNetwork.LocalPlayer.IsMasterClient)
             {
-                if (_model.CurrentUnit != null && _model.CurrentUnit.IsAlive())
+                if (_model.CurrentPlayerQueue != null && _model.CurrentPlayerQueue.Player.HasAliveUnits())
                 {
-                    _model.CurrentPlayerQueue.UnitsQueue.Enqueue(_model.CurrentUnit);
+                    if (_model.CurrentUnit != null && _model.CurrentUnit.IsAlive())
+                    {
+                        _model.CurrentPlayerQueue.UnitsQueue.Enqueue(_model.CurrentUnit);
+                    }
+                    _model.PlayersQueue.Enqueue(_model.CurrentPlayerQueue);
                 }
-                _model.PlayersQueue.Enqueue(_model.CurrentPlayerQueue);
+                _model.CurrentPlayerQueue = null;
+                _model.CurrentUnit = null;
             }
-            _model.CurrentPlayerQueue = null;
-            _model.CurrentUnit = null;
         }
 
-        public void RemoveUnit(Unit unitToRemove)
+        public void RemoveUnit(UnitModelScript unitToRemove)
         {
             if (_model.CurrentPlayerQueue != null && _model.CurrentPlayerQueue.UnitsQueue.Contains(unitToRemove))
             {
@@ -84,7 +115,7 @@ namespace Assets.Scripts.Contollers
             }
         }
 
-        private void RemoveUnitFromPlayerQueue(PlayerQueue player, Unit unitToRemove)
+        private void RemoveUnitFromPlayerQueue(PlayerQueue player, UnitModelScript unitToRemove)
         {
             for (int i = 0; i < player.UnitsQueue.Count; i++)
             {
@@ -98,8 +129,11 @@ namespace Assets.Scripts.Contollers
 
         public void DequeuePlayer()
         {
-            _model.CurrentPlayerQueue = _model.PlayersQueue.Dequeue();
-            _model.CurrentUnit = _model.CurrentPlayerQueue.UnitsQueue.Dequeue();
+            if (PhotonNetwork.OfflineMode || PhotonNetwork.LocalPlayer.IsMasterClient)
+            {
+                _model.CurrentPlayerQueue = _model.PlayersQueue.Dequeue();
+                _model.CurrentUnit = _model.CurrentPlayerQueue.UnitsQueue.Dequeue();
+            }
         }
 
         public Player GetCurrentPlayer()
@@ -117,9 +151,16 @@ namespace Assets.Scripts.Contollers
             return _model.Players.GroupBy(players => players.Team).Count(g => g.Any(queue => queue.HasAliveUnits())) == 1;
         }
 
-        public Unit GetCurrenUnit()
+        public UnitModelScript GetCurrenUnit()
         {
             return _model.CurrentUnit;
+        }
+
+        public void SetCurrentUnit(UnitModelScript unit)
+        {
+            _model.CurrentUnit = unit;
+            _model.PlayersQueue.Enqueue(_model.CurrentPlayerQueue);
+            _model.CurrentPlayerQueue = _model.PlayersQueue.First(p => p.Player.Color == unit.Color);
         }
 
 

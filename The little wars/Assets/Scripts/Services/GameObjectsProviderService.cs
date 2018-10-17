@@ -6,6 +6,7 @@ using Assets.Scripts.Constants;
 using Assets.Scripts.Contollers;
 using Assets.Scripts.Scripts.Ui;
 using Assets.Scripts.Services.Interfaces;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -94,6 +95,20 @@ namespace Assets.Scripts.Services
                     _powerBarScript = GameObject.Find("PowerBar").GetComponent<PowerBarScript>();
                 }
                 return _powerBarScript;
+            }
+        }
+
+
+        private PhotonView _mainPhotonView;
+        public PhotonView MainPhotonView
+        {
+            get
+            {
+                if (_mainPhotonView == null)
+                {
+                    _mainPhotonView = GameObject.Find("MainPhotonView").GetComponent<PhotonView>();
+                }
+                return _mainPhotonView;
             }
         }
 

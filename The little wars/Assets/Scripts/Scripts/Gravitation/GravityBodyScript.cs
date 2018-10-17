@@ -5,7 +5,7 @@ using System.Text;
 using Assets.Scripts.Constants;
 using UnityEngine;
 
-namespace Assets.Scripts.Scripts
+namespace Assets.Scripts.Scripts.Gravitation
 {
     [RequireComponent(typeof(Rigidbody2D))]
     public class GravityBodyScript : MonoBehaviour
@@ -15,6 +15,8 @@ namespace Assets.Scripts.Scripts
         private Rigidbody2D _rigidbody2D;
 
         public float Dist;
+
+        public bool Enabled = true;
 
 
         // Use this for initialization
@@ -36,7 +38,7 @@ namespace Assets.Scripts.Scripts
 
         private void ApplyGravity(Transform myTransform, List<GravityAttractorScript> gravityAtractors)
         {
-            if (gravityAtractors.Any())
+            if (gravityAtractors.Any() && Enabled)
             {
                 var closestGravityAttractor = GetClosestGravityAttractor(myTransform, gravityAtractors);
                 closestGravityAttractor.ApplyRotation(myTransform);

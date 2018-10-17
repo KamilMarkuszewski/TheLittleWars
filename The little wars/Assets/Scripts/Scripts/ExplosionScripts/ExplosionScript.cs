@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Assets.Scripts.Constants;
 using Assets.Scripts.Services;
+using Photon.Pun;
 using UnityEngine;
 
 namespace Assets.Scripts.Scripts.ExplosionScripts
@@ -18,9 +19,9 @@ namespace Assets.Scripts.Scripts.ExplosionScripts
             get { return ServiceLocator.GetService<SoundService>(); }
         }
 
-        private GameObjectsProviderService GameObjectsProviderService
+        private ObjectPoolingService ObjectPoolingService
         {
-            get { return ServiceLocator.GetService<GameObjectsProviderService>(); }
+            get { return ServiceLocator.GetService<ObjectPoolingService>(); }
         }
 
         #endregion
@@ -32,9 +33,11 @@ namespace Assets.Scripts.Scripts.ExplosionScripts
         }
 
         private Sprite _explSprite;
+        private bool _exploded = false;
 
-        private void Start()
+        public void Initialize()
         {
+            _exploded = false;
             var sr = GetComponent<SpriteRenderer>();
             if (sr != null)
             {
@@ -63,12 +66,23 @@ namespace Assets.Scripts.Scripts.ExplosionScripts
                 }
             }
 
-            Destroy(transform.parent.gameObject);
+            Invoke("DisableObject", 0.1f);
+
+        }
+
+        private void DisableObject()
+        {
+            ObjectPoolingService.GetWeaponObjectPool(WeaponDefinitionHolder.WeaponDefinition.WeaponEnum)
+                .PutObject(transform.parent.gameObject);
         }
 
         void OnCollisionEnter2D(Collision2D collision)
         {
-            ExplodeNow(collision.collider.gameObject);
+            if (!_exploded)
+            {
+                ExplodeNow(collision.collider.gameObject);
+                _exploded = true;
+            }
         }
 
         private void ColideWithMap(GameObject actualCollider)
@@ -78,8 +92,8 @@ namespace Assets.Scripts.Scripts.ExplosionScripts
 
         private void ColideWithUnit(GameObject actualCollider)
         {
-            var moveScript = actualCollider.GetComponent<UnitMoveScript>();
-            GameObjectsProviderService.MainGameController.ChangeHp(moveScript.Unit, -WeaponDefinitionHolder.WeaponDefinition.Damage);
+            var unitModelScript = actualCollider.GetComponent<UnitModelScript>();
+            unitModelScript.ChangeHp(-WeaponDefinitionHolder.WeaponDefinition.Damage);
         }
 
         private void ColideWithBullet(GameObject actualCollider)

@@ -21,6 +21,8 @@ namespace Assets.Scripts.Constants
         JetPack = 11,
         Hook = 12,
         BaseballBat = 13,
-        Skip = 14
+        Skip = 14,
+
+        MaxId = 15
     }
 }

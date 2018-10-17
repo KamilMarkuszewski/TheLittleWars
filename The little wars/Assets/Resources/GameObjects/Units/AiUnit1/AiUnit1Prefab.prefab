@@ -25,6 +25,8 @@ GameObject:
   - component: {fileID: 70752885719171304}
   - component: {fileID: 114821248063011394}
   - component: {fileID: 114716184471699258}
+  - component: {fileID: 114364825302593900}
+  - component: {fileID: 114929413174767394}
   m_Layer: 0
   m_Name: AiUnit1Prefab
   m_TagString: Unit
@@ -152,6 +154,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Dist: 0
+--- !u!114 &114364825302593900
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1156440202944296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 676eddcbee0a18c428756ac14f7b8ac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114503177934611030
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -180,10 +193,10 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 0
+  Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 0}
+  - {fileID: 114929413174767394}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -200,6 +213,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AllowControll: 0
   UsedWeapon: {fileID: 11400000, guid: dcafd4571582878468ce726c1d29fca6, type: 2}
+--- !u!114 &114929413174767394
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1156440202944296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
 --- !u!212 &212409419499890378
 SpriteRenderer:
   m_ObjectHideFlags: 1

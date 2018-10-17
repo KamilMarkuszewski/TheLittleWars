@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Assets.Scripts.Constants;
@@ -8,47 +9,33 @@ using UnityEngine;
 
 namespace Assets.Scripts.Utility
 {
-    public class UnitPrefabsContainer
+    public static class UnitPrefabsHelper
     {
         #region Services
 
-        private ResourcesService ResourcesService
+        private static ResourcesService ResourcesService
         {
             get { return ServiceLocator.GetService<ResourcesService>(); }
         }
 
         #endregion
 
-        private Queue<Transform> _humanUnitPrefabs;
-        public Queue<Transform> HumanUnitPrefabs
+        private static Queue<Transform> _humanUnitPrefabs;
+        public static Queue<Transform> HumanUnitPrefabs
         {
             get
             {
                 if (_humanUnitPrefabs == null)
                 {
                     _humanUnitPrefabs = new Queue<Transform>();
-                    ResourcesService.LoadUnitPrefabs(ResourcesPaths.Units).Where(t => t.name.Contains("LocalUnit")).ToList().ForEach(prefab => _humanUnitPrefabs.Enqueue(prefab));
+                    ResourcesService.LoadUnitPrefabs(ResourcesPaths.Units).Where(t => t.name.Contains("HumanUnit1")).ToList().ForEach(prefab => _humanUnitPrefabs.Enqueue(prefab));
                 }
                 return _humanUnitPrefabs;
             }
         }
 
-        private Queue<Transform> _remoteUnitPrefabs;
-        public Queue<Transform> RemoteUnitPrefabs
-        {
-            get
-            {
-                if (_remoteUnitPrefabs == null)
-                {
-                    _remoteUnitPrefabs = new Queue<Transform>();
-                    ResourcesService.LoadUnitPrefabs(ResourcesPaths.Units).Where(t => t.name.Contains("RemoteUnit")).ToList().ForEach(prefab => _remoteUnitPrefabs.Enqueue(prefab));
-                }
-                return _remoteUnitPrefabs;
-            }
-        }
-
-        private Queue<Transform> _aiUnitPrefabs;
-        public Queue<Transform> AiUnitPrefabs
+        private static Queue<Transform> _aiUnitPrefabs;
+        public static Queue<Transform> AiUnitPrefabs
         {
             get
             {
@@ -63,7 +50,7 @@ namespace Assets.Scripts.Utility
 
 
 
-        public Transform GetNextFreeUnitPrefab(int playersCount, PlayerType type)
+        public static Transform GetNextFreeUnitPrefab(int playersCount, PlayerType type)
         {
             Queue<Transform> chosenQueue = GetPrefabsCollection(type);
 
@@ -88,19 +75,40 @@ namespace Assets.Scripts.Utility
             }
         }
 
-        private Queue<Transform> GetPrefabsCollection(PlayerType type)
+        private static Queue<Transform> GetPrefabsCollection(PlayerType type)
         {
             switch (type)
             {
                 case PlayerType.LocalPlayer:
                     return HumanUnitPrefabs;
                 case PlayerType.RemotePlayer:
-                    return RemoteUnitPrefabs;
+                    return HumanUnitPrefabs;
                 case PlayerType.Ai:
                     return AiUnitPrefabs;
                 default:
                     throw new UnityException("Wrong player type");
             }
+        }
+
+
+        public static string GetPrefabPath(PlayerType type)
+        {
+            switch (type)
+            {
+                case PlayerType.LocalPlayer:
+                    return GetPrefabPath("HumanUnit1");
+                case PlayerType.RemotePlayer:
+                    return GetPrefabPath("HumanUnit1");
+                case PlayerType.Ai:
+                    return GetPrefabPath("AiUnit1");
+                default:
+                    throw new UnityException("Wrong player type");
+            }
+        }
+
+        private static string GetPrefabPath(string prefabName)
+        {
+            return Path.Combine("GameObjects", Path.Combine("Units", Path.Combine(prefabName, prefabName + "Prefab")));
         }
     }
 }

@@ -6,6 +6,7 @@ using Assets.Scripts.Constants;
 using Assets.Scripts.Entities.EventArgs;
 using Assets.Scripts.Services;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Assets.Scripts.Scripts.Ui
 {
@@ -27,6 +28,11 @@ namespace Assets.Scripts.Scripts.Ui
 
         public Transform[] Bars;
         private AudioSource _audioSource;
+
+        void Enable()
+        {
+            Assert.IsNull(Bars, "Component value is null");
+        }
 
         // Use this for initialization
         private void Start()

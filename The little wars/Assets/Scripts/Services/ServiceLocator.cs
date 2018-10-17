@@ -30,6 +30,8 @@ namespace Assets.Scripts.Services
             Register<SoundService>();
             Register<SpawnsService>();
             Register<DestructibleTerrainService>();
+            Register<UnitCreatorService>();
+            Register<ObjectPoolingService>();
         }
 
         private void Register<T>() where T : IService, new()

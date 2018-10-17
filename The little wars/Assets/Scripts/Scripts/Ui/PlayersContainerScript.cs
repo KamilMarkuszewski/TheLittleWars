@@ -152,7 +152,6 @@ namespace Assets.Scripts.Scripts.Ui
             SetDropdownValue("TeamDropdown", team);
         }
 
-
         public void SetUnitsNumber(int unitsNumber)
         {
             SetDropdownValue("UnitsNumberDropdown", unitsNumber);

@@ -5,6 +5,7 @@ using System.Text;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.Scripts.Ui
@@ -14,6 +15,12 @@ namespace Assets.Scripts.Scripts.Ui
         private RoomInfo _roomInfo;
         public Text RoomNameText;
         public Text RoomPlayersCountText;
+
+        void Enable()
+        {
+            Assert.IsNull(RoomNameText, "Component value is null");
+            Assert.IsNull(RoomPlayersCountText, "Component value is null");
+        }
 
         public void Fill(RoomInfo roomInfo)
         {

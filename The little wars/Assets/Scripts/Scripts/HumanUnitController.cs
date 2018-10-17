@@ -8,7 +8,6 @@ namespace Assets.Scripts.Scripts
 {
     public class HumanUnitController : UnitControllerBase
     {
-
         // Update is called once per frame
         void Update()
         {

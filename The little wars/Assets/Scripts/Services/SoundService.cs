@@ -15,24 +15,24 @@ namespace Assets.Scripts.Services
     {
         #region Services
 
-        private GameObjectsProviderService GameObjectsProviderService
-        {
-            get { return ServiceLocator.GetService<GameObjectsProviderService>(); }
-        }
-
         private ResourcesService ResourcesService
         {
             get { return ServiceLocator.GetService<ResourcesService>(); }
         }
 
+        private ObjectPoolingService ObjectPoolingService
+        {
+            get { return ServiceLocator.GetService<ObjectPoolingService>(); }
+        }
+
         #endregion
 
-        private ObjectPool<AudioSource> _audioSourcesPool;
+
         private List<AudioClip> _loadedAudioClips;
 
         public AudioSource GetAudioSourceFromPool()
         {
-            return _audioSourcesPool.GetObject();
+            return ObjectPoolingService.AudioSourcesPool.GetObject();
         }
 
         public void PlayClip(AudioClipsEnum clip)
@@ -44,7 +44,7 @@ namespace Assets.Scripts.Services
         {
             if (clip != null)
             {
-                AudioSource audioSource = _audioSourcesPool.GetObject();
+                AudioSource audioSource = ObjectPoolingService.AudioSourcesPool.GetObject();
                 audioSource.clip = clip;
                 audioSource.Play();
                 int clipLength = (int)(clip.length * 100);
@@ -81,17 +81,12 @@ namespace Assets.Scripts.Services
             invoker.DoWork += (sender, args) =>
             {
                 Thread.Sleep(clipLength);
-                _audioSourcesPool.PutObject(freeAudioSource);
+                ObjectPoolingService.AudioSourcesPool.PutObject(freeAudioSource);
             };
             invoker.RunWorkerAsync();
         }
 
-        private AudioSource AudioSourceGenerator()
-        {
-            var newGameObject = new GameObject("AudioSource", typeof(AudioSource));
-            newGameObject.transform.parent = GameObjectsProviderService.AudioSourcesGameObject.transform;
-            return newGameObject.GetComponent<AudioSource>();
-        }
+
 
         #region IService
 
@@ -99,7 +94,7 @@ namespace Assets.Scripts.Services
         {
             Status = ServiceStatus.Initializing;
 
-            _audioSourcesPool = new ObjectPool<AudioSource>(AudioSourceGenerator);
+
             _loadedAudioClips = ResourcesService.LoadAudioClips(ResourcesPaths.Sounds);
 
             Status = ServiceStatus.Ready;

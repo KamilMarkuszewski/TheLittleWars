@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.Scripts.Ui
 {
+    [RequireComponent(typeof(Text))]
     public class ConnectionStatusScript : MonoBehaviour
     {
         private const string ConnectionStatusMessage = "Connection status: ";
@@ -17,7 +18,7 @@ namespace Assets.Scripts.Scripts.Ui
         {
             get { return _connectionStatusText ?? (_connectionStatusText = GetComponent<Text>()); }
         }
-    
+
         public void Update()
         {
             ConnectionStatusText.text = ConnectionStatusMessage + PhotonNetwork.NetworkClientState;

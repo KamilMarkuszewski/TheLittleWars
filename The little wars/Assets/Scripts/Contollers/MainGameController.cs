@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Assets.Scripts.Constants;
 using Assets.Scripts.Entities;
 using Assets.Scripts.ScriptableObjects.GameModel;
+using Assets.Scripts.Scripts;
 using Assets.Scripts.Services;
+using Assets.Scripts.Utility;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,9 +20,14 @@ namespace Assets.Scripts.Contollers
     {
         #region Services
 
-        private SoundService SoundService
+        private GameObjectsProviderService GameObjectsProviderService
         {
-            get { return ServiceLocator.GetService<SoundService>(); }
+            get { return ServiceLocator.GetService<GameObjectsProviderService>(); }
+        }
+
+        private UnitCreatorService UnitCreatorService
+        {
+            get { return ServiceLocator.GetService<UnitCreatorService>(); }
         }
 
         private ShootService ShootService
@@ -31,12 +40,8 @@ namespace Assets.Scripts.Contollers
             get { return ServiceLocator.GetService<CameraService>(); }
         }
 
-        internal bool IsTimeFrozen()
-        {
-            return TimeFrozen;
-        }
-
         #endregion
+
 
         public MatchController MatchController;
         public CurrentWeaponController CurrentWeaponController;
@@ -50,46 +55,32 @@ namespace Assets.Scripts.Contollers
         private float _roundStart;
         public bool TimeFrozen = true;
 
+
+        internal bool IsTimeFrozen()
+        {
+            return TimeFrozen;
+        }
+
         public Player GetCurrentPlayer()
         {
             return MatchController.GetCurrentPlayer();
         }
 
-        public void ChangeHp(Unit unit, int amount)
+        public void EndMatchIfNeeded()
         {
-            unit.ChangeHp(amount);
-            if (unit.Hp < 1)
+            if (PhotonHelper.PlayerIsMultiplayerHost() || PhotonNetwork.OfflineMode)
             {
-                Kill(unit);
-            }
-        }
-
-        private void Kill(Unit unit)
-        {
-            SoundService.PlayClip(AudioClipsEnum.UnitKilled);
-            MatchController.RemoveUnit(unit);
-
-            unit.UnitTransform.gameObject.SetActive(false);
-
-            EndMatchIfNeeded();
-            if (unit.AllowControll)
-            {
-                NewRound();
-            }
-        }
-
-        private void EndMatchIfNeeded()
-        {
-            if (MatchController.HasPlayersQueueOnlyOneTeam())
-            {
-                GameOver = true;
-                MatchController.DequeuePlayer();
-                SceneManager.LoadScene(SceneNames.GameOverScene);
-            }
-            else if (MatchController.IsPlayersQueueEmpty())
-            {
-                GameOver = true;
-                SceneManager.LoadScene(SceneNames.GameOverScene);
+                if (MatchController.HasPlayersQueueOnlyOneTeam())
+                {
+                    GameOver = true;
+                    MatchController.DequeuePlayer();
+                    SceneManager.LoadScene(SceneNames.GameOverScene);
+                }
+                else if (MatchController.IsPlayersQueueEmpty())
+                {
+                    GameOver = true;
+                    SceneManager.LoadScene(SceneNames.GameOverScene);
+                }
             }
         }
 
@@ -97,12 +88,42 @@ namespace Assets.Scripts.Contollers
         // Use this for initialization
         void Awake()
         {
+            if (PhotonHelper.PlayerIsMultiplayerGuest())
+            {
+                ApplicationModel.LoadFromServer();
+            }
             CurrentWeaponController = new CurrentWeaponController(ApplicationModel.CurrentWeaponModel);
             MatchController = new MatchController(ApplicationModel.MatchModel, ApplicationModel.PlayersToCreate);
 
-            _roundLength = 434435;
+            _roundLength = 45;
+        }
 
-            NewRound();
+
+
+        void Start()
+        {
+            StartCoroutine(AwakeCoroutine());
+        }
+
+        private IEnumerator AwakeCoroutine()
+        {
+            yield return new WaitForSeconds(1);
+            MatchController.CreatePlayersUnits();
+            MatchController.EnqueuePlayer();
+            StartCoroutine(RoundCoroutine());
+        }
+
+        public void CreateUnit(Vector3 position, Player player)
+        {
+            if (PhotonHelper.PlayerIsMultiplayerHost())
+            {
+                int id = UniqueIdHelper.GetNext();
+                GameObjectsProviderService.MainPhotonView.RPC("RPC_CreateUnit", RpcTarget.All, position, player.Name, id);
+            }
+            else if(PhotonNetwork.OfflineMode)
+            {
+                UnitCreatorService.CreateSinglePlayerUnit(position, player);
+            }
         }
 
 
@@ -123,6 +144,11 @@ namespace Assets.Scripts.Contollers
             return string.Format("{0}:{1:00}", span.Minutes, span.Seconds);
         }
 
+        public void SetTimeTo3Sec()
+        {
+            _roundStart = Time.time - _roundLength + 3;
+        }
+
         public void NewRound()
         {
             RoundEnd();
@@ -133,7 +159,20 @@ namespace Assets.Scripts.Contollers
         private IEnumerator RoundCoroutine()
         {
             yield return new WaitForSeconds(2);
-            RoundStart();
+            if (PhotonHelper.PlayerIsMultiplayerGuest())
+            {
+                
+            }
+            else if (PhotonHelper.PlayerIsMultiplayerHost())
+            {
+                MatchController.DequeuePlayer();
+                var unit = MatchController.GetCurrenUnit();
+                GameObjectsProviderService.MainPhotonView.RPC("RPC_RoundStart", RpcTarget.All, unit.Id);
+            }
+            else
+            {
+                RoundStart();
+            }
         }
 
         public Color GetCurrentPlayerColor()
@@ -154,6 +193,39 @@ namespace Assets.Scripts.Contollers
             EndMatchIfNeeded();
         }
 
+        public void RoundStartFun(int unitId)
+        {
+            Debug.Log("RPC_RoundStart");
+            TimeFrozen = false;
+            _roundStart = Time.time;
+            var foundUnit = ApplicationModel.MatchModel.Units.First(u => u.Id == unitId);
+            if (!PhotonHelper.PlayerIsSinglePlayer())
+            {
+                MatchController.SetCurrentUnit(foundUnit);
+            }
+            if (foundUnit.Color == GetCurrentPlayerColor() && GetCurrentPlayer().Name == PhotonNetwork.NickName)
+            {
+                foundUnit.SetAllowControll(true);
+                foundUnit.SetScopeVisibility(true);
+            }
+            else
+            {
+                foundUnit.SetAllowControll(false);
+                foundUnit.SetScopeVisibility(false);
+            }
+
+            CameraService.SetCameraFollowAndRotationTarget(foundUnit.gameObject.transform);
+
+            CurrentWeaponController.ResetPower();
+            CurrentWeaponController.SetCurrentWeapon(ShootService.GetNoneWeapon());
+
+            if (RoundChangedEvent != null)
+            {
+                RoundChangedEvent.Invoke(this, new EventArgs());
+            }
+            EndMatchIfNeeded();
+        }
+
         private void RoundStart()
         {
             TimeFrozen = false;
@@ -163,7 +235,7 @@ namespace Assets.Scripts.Contollers
             unit.SetAllowControll(true);
             unit.SetScopeVisibility(true);
 
-            CameraService.SetCameraFollowAndRotationTarget(unit.UnitTransform);
+            CameraService.SetCameraFollowAndRotationTarget(unit.gameObject.transform);
 
             CurrentWeaponController.ResetPower();
             CurrentWeaponController.SetCurrentWeapon(ShootService.GetNoneWeapon());

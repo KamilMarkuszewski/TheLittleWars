@@ -6,6 +6,7 @@ using Assets.Scripts.Constants;
 using Assets.Scripts.ScriptableObjects;
 using Assets.Scripts.Services;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Assets.Scripts.Scripts
 {
@@ -50,10 +51,10 @@ namespace Assets.Scripts.Scripts
                 GameObjectsProviderService.CurrentWeaponController.SetCurrentWeapon(UsedWeapon);
             }
 
-            var xUnitMovement = 0.0f;
-            var yScopeMovement = 0.0f;
+            const float xUnitMovement = 0.0f;
+            const float yScopeMovement = 0.0f;
             var isShooting = _isShooting;
-            var isJumping = false;
+            const bool isJumping = false;
 
             UnitMoveScript.ControllCharacter(xUnitMovement, yScopeMovement, isShooting, isJumping);
         }

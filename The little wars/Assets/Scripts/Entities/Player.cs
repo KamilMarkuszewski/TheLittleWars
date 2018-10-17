@@ -1,42 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Assets.Scripts.Constants;
+using Assets.Scripts.Scripts;
 using Assets.Scripts.Services;
+using Photon.Pun;
 using UnityEngine;
+using UnityEngine.UI;
+using Assets.Scripts.ExtensionMethods;
 
 namespace Assets.Scripts.Entities
 {
     public class Player
     {
-        #region Services
-
-        private SpawnsService SpawnsService
-        {
-            get { return ServiceLocator.GetService<SpawnsService>(); }
-        }
-
-        #endregion
-
         public Color Color;
         public int Team;
         public PlayerType PlayerType;
-        public List<Unit> Units = new List<Unit>();
+        public List<UnitModelScript> Units = new List<UnitModelScript>();
+        public string Name;
+        public int UnitsCount;
 
-        public Player(PlayerCreationEntity playerCreationEntity, List<Vector3> spawns, Transform characterPrefab)
+        public Player(PlayerCreationEntity playerCreationEntity)
         {
             Team = playerCreationEntity.Team;
             PlayerType = playerCreationEntity.PlayerType;
             Color = playerCreationEntity.GetColor();
-
-            for (int i = 0; i < playerCreationEntity.UnitsNumber; i++)
-            {
-                var unit = new Unit();
-                Units.Add(unit);
-
-                unit.Instantiate(characterPrefab, SpawnsService.GetNextSpawn(spawns), Color);
-            }
+            Name = playerCreationEntity.PlayerName;
+            UnitsCount = playerCreationEntity.UnitsNumber;
         }
 
         public bool HasAliveUnits()

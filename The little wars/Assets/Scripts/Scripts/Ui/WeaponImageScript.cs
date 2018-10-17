@@ -5,9 +5,11 @@ using System.Text;
 using Assets.Scripts.Entities.EventArgs;
 using Assets.Scripts.Services;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.Scripts.Scripts.Ui
 {
+    [RequireComponent(typeof(Image))]
     public class WeaponImageScript : MonoBehaviour
     {
         #region Services
@@ -19,14 +21,14 @@ namespace Assets.Scripts.Scripts.Ui
 
         #endregion
 
-        private UnityEngine.UI.Image _image;
-        private UnityEngine.UI.Image Image
+        private Image _image;
+        private Image Image
         {
             get
             {
                 if (_image == null)
                 {
-                    _image = GetComponent<UnityEngine.UI.Image>();
+                    _image = GetComponent<Image>();
                 }
                 return _image;
             }

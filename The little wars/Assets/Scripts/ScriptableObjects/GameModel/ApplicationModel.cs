@@ -5,6 +5,7 @@ using System.Text;
 using Assets.Scripts.Constants;
 using Assets.Scripts.Contollers.Models;
 using Assets.Scripts.Entities;
+using Assets.Scripts.Utility;
 using UnityEngine;
 
 namespace Assets.Scripts.ScriptableObjects.GameModel
@@ -29,7 +30,29 @@ namespace Assets.Scripts.ScriptableObjects.GameModel
             CurrentWeaponModel = new CurrentWeaponModel();
         }
 
+        public void LoadFromServer()
+        {
+            ResetMatch();
+            PlayersToCreate.Clear();
+
+            var aiPlayers = CustomPropertiesHelper.CurrentRoomGetCustomPropertyPlayers(PhotonPropertiesNames.AiPlayers);
+            var humanPlayers = CustomPropertiesHelper.CurrentRoomGetCustomPropertyPlayers(PhotonPropertiesNames.HumanPlayers);
+
+            foreach (var el in aiPlayers)
+            {
+                var dict = (Dictionary<string, object>)el.Value;
+                PlayersToCreate.Add(PlayerCreationEntity.FromDictionary(dict));
+            }
+
+            foreach (var el in humanPlayers)
+            {
+                var dict = (Dictionary<string, object>)el.Value;
+                PlayersToCreate.Add(PlayerCreationEntity.FromDictionary(dict));
+            }
+        }
+
         public List<PlayerCreationEntity> PlayersToCreate;
+
         public MatchModel MatchModel;
         public CurrentWeaponModel CurrentWeaponModel;
 
